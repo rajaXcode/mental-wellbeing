@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MCQ Practice Portal - Mental Health & Wellbeing</title>
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Bootstrap Icons -->
@@ -16,7 +17,7 @@
     <style>
         :root {
             --font-main: 'Inter', system-ui, -apple-system, sans-serif;
-            --transition-speed: 0.25s;
+            --transition-speed: 0.2s;
         }
 
         body {
@@ -38,7 +39,6 @@
 
         .module-card {
             transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-            cursor: pointer;
             border: 1px solid rgba(0, 0, 0, 0.08);
         }
 
@@ -47,8 +47,8 @@
         }
 
         .module-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08) !important;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06) !important;
         }
 
         .option-btn {
@@ -56,7 +56,6 @@
             white-space: normal;
             transition: all var(--transition-speed) ease;
             border: 1.5px solid var(--bs-border-color);
-            position: relative;
         }
 
         .option-btn:hover:not(:disabled) {
@@ -103,23 +102,30 @@
         .progress-thin {
             height: 6px;
         }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body class="bg-body-tertiary">
 
-    <!-- Top Navigation Header -->
     <header class="app-header sticky-top bg-body py-2">
         <div class="container d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center gap-2" style="cursor: pointer;" onclick="showLandingView()">
+            <div class="d-flex align-items-center gap-2 cursor-pointer" id="navHomeBtn">
                 <i class="bi bi-journal-check text-primary fs-3"></i>
                 <div>
-                    <h1 class="h5 m-0 fw-bold tracking-tight">MCQ Practice Portal</h1>
+                    <h1 class="h5 m-0 fw-bold">MCQ Practice Portal</h1>
                     <p class="small text-muted m-0 d-none d-sm-block">Mental Health & Wellbeing Practice Hub</p>
                 </div>
             </div>
 
             <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-outline-warning btn-sm rounded-pill" id="viewBookmarksHeaderBtn">
+                    <i class="bi bi-bookmark-fill me-1"></i> <span class="d-none d-sm-inline">Bookmarks</span> (<span
+                        id="headerBookmarkCount">0</span>)
+                </button>
 
                 <button
                     class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center"
@@ -132,7 +138,7 @@
 
     <main class="container py-4 flex-grow-1">
 
-        <!-- Overall Global Stats Ribbon -->
+        <!-- Global Stats Bar -->
         <div class="row g-3 mb-4" id="statsBar">
             <div class="col-6 col-md-3">
                 <div class="p-3 bg-body rounded-4 shadow-sm border text-center">
@@ -152,26 +158,32 @@
                     <div class="fs-4 fw-bold text-success" id="statAccuracy">0%</div>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="p-3 bg-body rounded-4 shadow-sm border text-center">
-                    <div class="text-muted small fw-medium mb-1">Bookmarked</div>
+            <div class="col-6 col-md-3 cursor-pointer" id="statBookmarkedCard">
+                <div class="p-3 bg-body rounded-4 shadow-sm border text-center h-100">
+                    <div class="text-muted small fw-medium mb-1">Bookmarked <i class="bi bi-arrow-right-short"></i>
+                    </div>
                     <div class="fs-4 fw-bold text-warning" id="statBookmarked">0</div>
                 </div>
             </div>
         </div>
 
-        <!-- 1) LANDING VIEW: MODULE SELECTION & MODE CHOICE -->
+        <!-- View 1: Landing Dashboard -->
         <div id="landingView">
             <div class="row mb-4 align-items-center">
-                <div class="col-md-8">
+                <div class="col-md-7">
                     <h2 class="fw-bold mb-1">Practice Dashboard</h2>
-                    <p class="text-muted mb-0">Select a mode or a specific week to begin your interactive quiz practice.
-                    </p>
+                    <p class="text-muted mb-0">Select a practice mode or a specific week to begin your revision.</p>
                 </div>
-                <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                    <button class="btn btn-primary btn-lg w-100 w-md-auto rounded-3 shadow-sm"
-                        onclick="startPracticeMode('all')">
-                        <i class="bi bi-lightning-charge-fill me-2"></i>Practice All Questions
+                <div class="col-md-5 text-md-end mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-md-end">
+                    <button class="btn btn-warning rounded-3 shadow-sm text-dark fw-semibold" id="practiceBookmarksBtn">
+                        <i class="bi bi-bookmark-fill me-1"></i> Review Bookmarks
+                    </button>
+                    <button class="btn btn-primary rounded-3 shadow-sm" id="practiceAllBtn">
+                        <i class="bi bi-lightning-charge-fill me-1"></i> Practice All Questions
+                    </button>
+                    <button class="btn btn-outline-danger rounded-3" id="resetAllBtn"
+                        title="Reset all progress and answers">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset All Progress
                     </button>
                 </div>
             </div>
@@ -183,14 +195,14 @@
             </h3>
 
             <div class="row g-3" id="modulesGrid">
-                <!-- Week modules generated via JavaScript -->
+                <!-- Week modules generated via JS -->
             </div>
         </div>
 
-        <!-- 2) QUIZ PRACTICE VIEW -->
+        <!-- View 2: Quiz Practice Mode -->
         <div id="quizView" class="d-none">
             <div class="d-flex align-items-center justify-content-between mb-3">
-                <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="showLandingView()">
+                <button class="btn btn-sm btn-outline-secondary rounded-pill" id="exitQuizBtn">
                     <i class="bi bi-arrow-left me-1"></i> Exit Practice
                 </button>
 
@@ -201,12 +213,12 @@
                 </span>
 
                 <button class="btn btn-sm btn-outline-warning rounded-circle" id="bookmarkBtn"
-                    onclick="toggleCurrentBookmark()" title="Bookmark Question">
+                    title="Bookmark Question">
                     <i class="bi bi-bookmark" id="bookmarkIcon"></i>
                 </button>
             </div>
 
-            <!-- Question Progress -->
+            <!-- Question Progress Bar -->
             <div class="mb-3">
                 <div class="d-flex justify-content-between align-items-center small text-muted mb-1">
                     <span>Question <strong id="currentQNum">1</strong> of <strong id="totalQNum">10</strong></span>
@@ -218,21 +230,20 @@
                 </div>
             </div>
 
-            <!-- Main Question Container -->
+            <!-- Question Box -->
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body p-4">
                     <h2 class="h5 fw-bold mb-4" id="questionText">Loading question...</h2>
 
                     <div class="d-grid gap-3" id="optionsContainer">
-                        <!-- Options dynamically loaded -->
+                        <!-- Options dynamically populated -->
                     </div>
 
-                    <!-- Instant Answer Feedback Alert -->
+                    <!-- Answer Feedback Alert -->
                     <div class="mt-4 p-3 rounded-3 d-none" id="feedbackAlert">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="fw-semibold" id="feedbackTitle">Correct!</div>
-                            <button class="btn btn-sm btn-light border" id="explainAiBtn"
-                                onclick="explainCurrentQuestionWithAI()">
+                            <button class="btn btn-sm btn-light border" id="explainAiBtn">
                                 <i class="bi bi-stars text-primary me-1"></i> Explain with AI
                             </button>
                         </div>
@@ -240,29 +251,45 @@
                     </div>
 
                     <!-- AI Concept Explanation Box -->
-                    <div class="mt-3 p-3 rounded-3 ai-box d-none" id="aiExplanationBox">
-                        <!-- AI Explanation loaded here -->
-                    </div>
+                    <div class="mt-3 p-3 rounded-3 ai-box d-none" id="aiExplanationBox"></div>
                 </div>
             </div>
 
-            <!-- Navigation Bar -->
+            <!-- Quiz Navigation -->
             <div class="d-flex justify-content-between align-items-center">
-                <button class="btn btn-outline-secondary rounded-3" id="prevBtn" onclick="navigateQuestion(-1)">
+                <button class="btn btn-outline-secondary rounded-3" id="prevBtn">
                     <i class="bi bi-chevron-left me-1"></i> Previous
                 </button>
 
-                <button class="btn btn-outline-primary rounded-3" onclick="openGridModal()">
+                <button class="btn btn-outline-primary rounded-3" id="openGridBtn">
                     <i class="bi bi-grid-3x3-gap me-1"></i> Question Grid
                 </button>
 
-                <button class="btn btn-primary rounded-3" id="nextBtn" onclick="navigateQuestion(1)">
+                <button class="btn btn-primary rounded-3" id="nextBtn">
                     Next <i class="bi bi-chevron-right ms-1"></i>
                 </button>
             </div>
         </div>
 
-        <!-- 3) SUMMARY & REVIEW VIEW -->
+        <!-- View 3: Bookmarks Hub (Review Only) -->
+        <div id="bookmarksView" class="d-none">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill mb-2" id="exitBookmarksBtn">
+                        <i class="bi bi-arrow-left me-1"></i> Return to Dashboard
+                    </button>
+                    <h2 class="h4 fw-bold mb-0"><i class="bi bi-bookmark-fill text-warning me-2"></i>Bookmarked
+                        Questions Review</h2>
+                    <p class="text-muted small m-0">Study and review your bookmarked questions and correct answers.</p>
+                </div>
+            </div>
+
+            <div id="bookmarksContainer" class="d-grid gap-3">
+                <!-- Bookmark Cards rendered here -->
+            </div>
+        </div>
+
+        <!-- View 4: Session Summary & Review -->
         <div id="summaryView" class="d-none">
             <div class="card border-0 shadow-sm rounded-4 p-4 text-center mb-4">
                 <div class="mb-3">
@@ -270,23 +297,22 @@
                     <div class="text-muted fw-medium" id="summaryPercent">0% Score</div>
                 </div>
 
-                <p class="text-muted mb-4" id="summaryMessage">Great job completing this practice session!</p>
+                <p class="text-muted mb-4">Great job completing this practice session!</p>
 
                 <div class="d-flex flex-wrap justify-content-center gap-2">
-                    <button class="btn btn-primary rounded-3" onclick="showLandingView()">
+                    <button class="btn btn-primary rounded-3" id="summaryReturnHomeBtn">
                         <i class="bi bi-house-door me-1"></i> Return to Dashboard
                     </button>
-                    <button class="btn btn-outline-primary rounded-3" onclick="restartCurrentSession()">
-                        <i class="bi bi-arrow-counterclockwise me-1"></i> Retry Session
+                    <button class="btn btn-outline-primary rounded-3" id="summaryRetryBtn">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Practice Again
                     </button>
-
-                    <button class="btn btn-outline-success rounded-3" onclick="analyzePerformanceWithAI()">
+                    <button class="btn btn-outline-success rounded-3" id="summaryAiAnalysisBtn">
                         <i class="bi bi-stars me-1"></i> AI Performance Analysis
                     </button>
                 </div>
             </div>
 
-            <!-- AI Performance Review Area -->
+            <!-- AI Diagnostics Container -->
             <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 ai-box d-none" id="aiAnalysisContainer">
                 <h3 class="h6 fw-bold text-primary mb-3">
                     <i class="bi bi-stars me-1"></i> Gemini AI Performance & Weak Area Analysis
@@ -296,22 +322,24 @@
                 </div>
             </div>
 
-            <!-- Question-by-Question Review -->
+            <!-- Session Question Breakdown -->
             <h3 class="h5 fw-bold mb-3">Session Review</h3>
-            <div class="d-flex gap-2 mb-3">
-                <button class="btn btn-sm btn-outline-secondary active" onclick="filterReview('all', this)">All</button>
-                <button class="btn btn-sm btn-outline-success" onclick="filterReview('correct', this)">Correct</button>
-                <button class="btn btn-sm btn-outline-danger" onclick="filterReview('wrong', this)">Incorrect</button>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-sm btn-outline-secondary active review-filter-btn" data-filter="all">All</button>
+                <button class="btn btn-sm btn-outline-success review-filter-btn" data-filter="correct">Correct</button>
+                <button class="btn btn-sm btn-outline-danger review-filter-btn" data-filter="wrong">Incorrect</button>
+                <button class="btn btn-sm btn-outline-warning review-filter-btn"
+                    data-filter="bookmarked">Bookmarked</button>
             </div>
 
             <div class="d-grid gap-3" id="reviewList">
-                <!-- Review Items -->
+                <!-- Questions Review list -->
             </div>
         </div>
 
     </main>
 
-    <!-- MODAL 1: Question Navigation Grid -->
+    <!-- Question Grid Modal -->
     <div class="modal fade" id="gridModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-4 border-0">
@@ -320,21 +348,81 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="d-flex flex-wrap gap-2 justify-content-center" id="modalGridContainer">
-                        <!-- Grid Buttons -->
-                    </div>
+                    <div class="d-flex flex-wrap gap-2 justify-content-center" id="modalGridContainer"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
+    <!-- Session Resume / Restart Prompt Modal -->
+    <div class="modal fade" id="resumePromptModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="resumeModalTitle">Resume Practice Session?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-3">
+                    <p class="text-muted mb-0" id="resumeModalBody">
+                        You have existing answers or progress saved for this session. Would you like to resume from
+                        where you left off or start fresh from the beginning?
+                    </p>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-danger rounded-3" id="restartSessionBtn">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Start Beginning (Reset)
+                    </button>
+                    <button type="button" class="btn btn-primary rounded-3" id="resumeSessionBtn">
+                        <i class="bi bi-play-fill me-1"></i> Resume
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Generator Modal -->
+    <div class="modal fade" id="aiGeneratorModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-stars text-primary me-2"></i>Generate AI Question
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Topic / Concept</label>
+                        <input type="text" class="form-control rounded-3" id="aiTopicInput"
+                            placeholder="e.g. Cognitive Dissonance, Stress Resilience, Attachment Styles" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Difficulty Level</label>
+                        <select class="form-select rounded-3" id="aiDifficultySelect">
+                            <option value="Easy">Easy</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                    <div id="aiGenStatus" class="small text-primary d-none mb-3">
+                        <span class="spinner-border spinner-border-sm me-2" role="status"></span> Generating custom MCQ
+                        via Gemini AI...
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-3" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary rounded-3" id="generateQuestionBtn">
+                        Generate & Practice
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // -------------------------------------------------------------
-        // PRESEEDED MCQ DATA (WEEKS 1 TO 12)
-        // -------------------------------------------------------------
+        // Dataset containing 12 Weeks / Modules (119 Questions Total)
         const rawModulesData = [
             {
                 id: "w1",
@@ -517,7 +605,7 @@
                 questions: [
                     { id: "w12_q1", q: "Body image refers to:", options: ["A) Physical fitness level", "B) Perception and feelings about one's body", "C) Body weight only", "D) Medical health status"], ans: "B" },
                     { id: "w12_q2", q: "Upward social comparison leads to:", options: ["A) Increased confidence always", "B) Comparing with less successful people", "C) Comparing with better-looking or more successful people", "D) Ignoring others"], ans: "C" },
-                    { id: "w12_q3", q: "Objectification theory suggests that:", options: ["A) People ignore appearance", "B) Individuals see themeselves from an outsider's perspective", "C) Social media has no effect", "D) Only men are affected"], ans: "B" },
+                    { id: "w12_q3", q: "Objectification theory suggests that:", options: ["A) People ignore appearance", "B) Individuals see themselves from an outsider's perspective", "C) Social media has no effect", "D) Only men are affected"], ans: "B" },
                     { id: "w12_q4", q: "FOMO stands for:", options: ["A) Fear of Missing Out", "B) Fear of Mental Overload", "C) Feeling of Mood Oscillation", "D) Focus on Media Output"], ans: "A" },
                     { id: "w12_q5", q: "Digital fatigue is:", options: ["A) Physical illness only", "B) Mental exhaustion from excessive screen time", "C) Lack of sleep only", "D) Internet failure"], ans: "B" },
                     { id: "w12_q6", q: "Which is a key feature of cyberbullying?", options: ["A) Face-to-face interaction", "B) Limited impact", "C) Online harassment", "D) Only adults are affected"], ans: "C" },
@@ -531,47 +619,60 @@
 
         const TOTAL_ALL_QUESTIONS = rawModulesData.reduce((acc, m) => acc + m.questions.length, 0);
 
-        // -------------------------------------------------------------
-        // STATE MANAGEMENT & LOCAL STORAGE
-        // -------------------------------------------------------------
+        // State Variables - Separated session progress for every mode
         let userState = {
             theme: 'light',
-            userAnswers: {},  // { qId: "A" / "B" / ... }
-            bookmarks: [],    // [ qId, ... ]
-            completedModules: [] // [ "w1", ... ]
+            userAnswers: {},  // Structure: { 'all': { qId: "A" }, 'w1': { qId: "B" }, ... }
+            bookmarks: [],    // [ "w1_q1", ... ]
+            savedIndexes: {}  // { 'all': 4, 'w1': 2 }
         };
 
         let currentSession = {
-            mode: 'all', // 'all' or 'module' or 'ai'
+            mode: 'all', // 'all', 'module', or 'ai'
             moduleId: null,
             questions: [],
             currentIndex: 0
         };
 
+        let pendingSessionTarget = null; // Used for resume prompt modal
+
+        // Storage Management
         function loadState() {
             try {
-                const saved = localStorage.getItem('mcq_portal_state');
+                const saved = localStorage.getItem('mcq_portal_clean_state_v2');
                 if (saved) {
-                    userState = { ...userState, ...JSON.parse(saved) };
+                    const parsed = JSON.parse(saved);
+                    userState = {
+                        theme: parsed.theme || 'light',
+                        userAnswers: parsed.userAnswers || {},
+                        bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks : [],
+                        savedIndexes: parsed.savedIndexes || {}
+                    };
                 }
             } catch (e) {
-                console.warn("Could not read LocalStorage, using fallback memory state.");
+                console.warn("Could not load LocalStorage state.");
             }
             applyTheme(userState.theme);
         }
 
         function saveState() {
             try {
-                localStorage.setItem('mcq_portal_state', JSON.stringify(userState));
+                localStorage.setItem('mcq_portal_clean_state_v2', JSON.stringify(userState));
             } catch (e) {
                 console.warn("Could not save to LocalStorage.");
             }
             updateGlobalStats();
         }
 
-        // -------------------------------------------------------------
-        // GEMINI AI INTEGRATION API CALLS
-        // -------------------------------------------------------------
+        // Helper to access session-specific answers safely
+        function getScopeAnswers(scopeKey) {
+            if (!userState.userAnswers[scopeKey]) {
+                userState.userAnswers[scopeKey] = {};
+            }
+            return userState.userAnswers[scopeKey];
+        }
+
+        // Gemini API Helper Call
         async function callGeminiApi(promptText, isJson = false, jsonSchema = null) {
             const apiKey = "";
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
@@ -598,13 +699,10 @@
                         body: JSON.stringify(payload)
                     });
 
-                    if (!response.ok) {
-                        throw new Error(`HTTP Error ${response.status}`);
-                    }
+                    if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
 
                     const result = await response.json();
-                    const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-                    return text;
+                    return result?.candidates?.[0]?.content?.parts?.[0]?.text;
                 } catch (err) {
                     if (i === retries - 1) throw err;
                     await new Promise(res => setTimeout(res, delay));
@@ -613,16 +711,16 @@
             }
         }
 
-        // AI Question Explanation
+        // AI Features Logic
         async function explainCurrentQuestionWithAI() {
             const q = currentSession.questions[currentSession.currentIndex];
             if (!q) return;
 
             const explainBox = document.getElementById('aiExplanationBox');
             explainBox.classList.remove('d-none');
-            explainBox.innerHTML = '<div class="d-flex align-items-center gap-2"><div class="spinner-border spinner-border-sm text-primary" role="status"></div><span>Generating AI Concept Explanation...</span></div>';
+            explainBox.innerHTML = '<div class="d-flex align-items-center gap-2 small text-primary"><div class="spinner-border spinner-border-sm" role="status"></div><span>Generating AI Concept Explanation...</span></div>';
 
-            const prompt = `Act as an expert psychology and mental health instructor. Explain the following multiple-choice question clearly in 2 to 3 concise bullet points. Focus on why the correct answer is Option ${q.ans} and briefly explain the underlying mental health concept.
+            const prompt = `Act as an expert psychology instructor. Explain the following question in 2-3 concise bullet points. Focus on why Option ${q.ans} is correct.
 
 Question: ${q.q}
 Options:
@@ -630,40 +728,183 @@ ${q.options.join('\n')}
 Correct Answer: Option ${q.ans}`;
 
             try {
-                const explanationText = await callGeminiApi(prompt);
+                const text = await callGeminiApi(prompt);
                 explainBox.innerHTML = `
-          <div class="fw-bold mb-2 text-primary"><i class="bi bi-stars me-1"></i> AI Concept Explanation</div>
-          <div>${explanationText ? explanationText.replace(/\n/g, '<br>') : 'Unable to generate explanation at this time.'}</div>
+          <div class="fw-bold mb-2 text-primary small"><i class="bi bi-stars me-1"></i> AI Concept Explanation</div>
+          <div class="small">${text ? text.replace(/\n/g, '<br>') : 'Unable to generate explanation.'}</div>
         `;
             } catch (err) {
-                explainBox.innerHTML = `<span class="text-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i> Failed to generate AI explanation. Please check connection.</span>`;
+                explainBox.innerHTML = `<span class="text-danger small"><i class="bi bi-exclamation-triangle-fill me-1"></i> Failed to generate AI explanation.</span>`;
             }
         }
 
+        async function explainSpecificQuestionWithAI(qId, containerId) {
+            const allQMap = getAllQuestionsMap();
+            const q = allQMap[qId];
+            if (!q) return;
 
-        // -------------------------------------------------------------
-        // UI DASHBOARD & VIEW CONTROLLER
-        // -------------------------------------------------------------
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            container.classList.remove('d-none');
+            container.innerHTML = '<div class="d-flex align-items-center gap-2 small text-primary"><div class="spinner-border spinner-border-sm" role="status"></div><span>Generating AI Concept Explanation...</span></div>';
+
+            const prompt = `Act as an expert psychology instructor. Explain the following question in 2-3 concise bullet points. Focus on why Option ${q.ans} is correct.
+
+Question: ${q.q}
+Options:
+${q.options.join('\n')}
+Correct Answer: Option ${q.ans}`;
+
+            try {
+                const text = await callGeminiApi(prompt);
+                container.innerHTML = `
+          <div class="fw-bold mb-1 text-primary small"><i class="bi bi-stars me-1"></i> AI Concept Explanation</div>
+          <div class="small">${text ? text.replace(/\n/g, '<br>') : 'Unable to generate explanation.'}</div>
+        `;
+            } catch (err) {
+                container.innerHTML = `<span class="text-danger small"><i class="bi bi-exclamation-triangle-fill me-1"></i> Failed to generate AI explanation.</span>`;
+            }
+        }
+
+        async function analyzePerformanceWithAI() {
+            const container = document.getElementById('aiAnalysisContainer');
+            const body = document.getElementById('aiAnalysisBody');
+
+            container.classList.remove('d-none');
+            body.innerHTML = '<div class="d-flex align-items-center gap-2"><div class="spinner-border spinner-border-sm text-primary" role="status"></div><span>Analyzing missed questions with Gemini AI...</span></div>';
+
+            const scopeKey = currentSession.mode === 'all' ? 'all' : (currentSession.moduleId || 'ai');
+            const answers = getScopeAnswers(scopeKey);
+
+            const missed = [];
+            currentSession.questions.forEach(q => {
+                const userAns = answers[q.id];
+                if (userAns && userAns !== q.ans) {
+                    missed.push({ question: q.q, selected: userAns, correct: q.ans });
+                }
+            });
+
+            if (missed.length === 0) {
+                body.innerHTML = '<div class="alert alert-success m-0"><i class="bi bi-check-circle-fill me-2"></i>Outstanding performance! You answered all questions in this session correctly.</div>';
+                return;
+            }
+
+            const prompt = `Act as an academic mentor in Mental Health & Wellbeing. Analyze these missed student questions and generate a concise diagnostic summary (under 200 words) with key concepts to review.
+
+Missed Questions:
+${JSON.stringify(missed, null, 2)}`;
+
+            try {
+                const analysisText = await callGeminiApi(prompt);
+                body.innerHTML = analysisText ? analysisText.replace(/\n/g, '<br>') : 'Could not generate performance review.';
+            } catch (err) {
+                body.innerHTML = '<span class="text-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i> Error analyzing performance.</span>';
+            }
+        }
+
+        async function generateAIQuestion() {
+            const topicInput = document.getElementById('aiTopicInput').value.trim();
+            const difficulty = document.getElementById('aiDifficultySelect').value;
+            const status = document.getElementById('aiGenStatus');
+            const btn = document.getElementById('generateQuestionBtn');
+
+            if (!topicInput) {
+                alert("Please enter a topic or concept.");
+                return;
+            }
+
+            status.classList.remove('d-none');
+            btn.disabled = true;
+
+            const prompt = `Create 1 multiple-choice question on: "${topicInput}" with difficulty level "${difficulty}" for Mental Health & Wellbeing studies. Return JSON.`;
+
+            const schema = {
+                type: "OBJECT",
+                properties: {
+                    q: { type: "STRING" },
+                    options: { type: "ARRAY", items: { type: "STRING" } },
+                    ans: { type: "STRING" }
+                },
+                propertyOrdering: ["q", "options", "ans"]
+            };
+
+            try {
+                const jsonStr = await callGeminiApi(prompt, true, schema);
+                const parsedQ = JSON.parse(jsonStr);
+
+                const generatedQObj = {
+                    id: 'ai_' + Date.now(),
+                    q: parsedQ.q,
+                    options: parsedQ.options,
+                    ans: parsedQ.ans.toUpperCase().charAt(0)
+                };
+
+                const modalEl = document.getElementById('aiGeneratorModal');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+
+                currentSession.mode = 'ai';
+                currentSession.moduleId = null;
+                currentSession.questions = [generatedQObj];
+                currentSession.currentIndex = 0;
+
+                document.getElementById('quizModuleBadge').innerText = `AI: ${topicInput}`;
+                document.getElementById('landingView').classList.add('d-none');
+                document.getElementById('summaryView').classList.add('d-none');
+                document.getElementById('bookmarksView').classList.add('d-none');
+                document.getElementById('quizView').classList.remove('d-none');
+                document.getElementById('statsBar').classList.add('d-none');
+
+                renderCurrentQuestion();
+            } catch (err) {
+                alert("Failed to generate AI question. Please try again.");
+            } finally {
+                status.classList.add('d-none');
+                btn.disabled = false;
+            }
+        }
+
+        // Helper functions
+        function getAllQuestionsMap() {
+            let map = {};
+            rawModulesData.forEach(m => {
+                m.questions.forEach(q => {
+                    map[q.id] = q;
+                });
+            });
+            return map;
+        }
+
         function renderModulesGrid() {
             const grid = document.getElementById('modulesGrid');
             grid.innerHTML = '';
 
             rawModulesData.forEach((m, idx) => {
                 const totalModQ = m.questions.length;
-                const answeredModQ = m.questions.filter(q => userState.userAnswers[q.id]).length;
+                const weekAnswers = getScopeAnswers(m.id);
+                const answeredModQ = m.questions.filter(q => weekAnswers[q.id] !== undefined).length;
                 const progressPct = Math.round((answeredModQ / totalModQ) * 100);
 
                 const col = document.createElement('div');
                 col.className = 'col-sm-6 col-md-4 col-lg-3';
                 col.innerHTML = `
-          <div class="card module-card h-100 rounded-4 shadow-sm p-3 bg-body" onclick="startPracticeMode('module', '${m.id}')">
+          <div class="card module-card h-100 rounded-4 shadow-sm p-3 bg-body">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-1">Week ${idx + 1}</span>
-              <small class="text-muted fw-semibold">${answeredModQ}/${totalModQ} Done</small>
+              <button class="btn btn-sm btn-link text-danger p-0 text-decoration-none small" onclick="event.stopPropagation(); resetWeekData('${m.id}')" title="Reset Week ${idx + 1} progress">
+                <i class="bi bi-trash3"></i> Reset
+              </button>
             </div>
-            <h4 class="h6 fw-bold mb-2">${m.title}</h4>
-            <div class="progress progress-thin rounded-pill mt-auto">
-              <div class="progress-bar bg-primary" style="width: ${progressPct}%"></div>
+            <div class="cursor-pointer" onclick="initiatePracticeSession('module', '${m.id}')">
+              <h4 class="h6 fw-bold mb-2">${m.title}</h4>
+              <div class="d-flex justify-content-between small text-muted mb-1">
+                <span>Progress</span>
+                <span>${answeredModQ}/${totalModQ}</span>
+              </div>
+              <div class="progress progress-thin rounded-pill mt-1">
+                <div class="progress-bar bg-primary" style="width: ${progressPct}%"></div>
+              </div>
             </div>
           </div>
         `;
@@ -672,29 +913,37 @@ Correct Answer: Option ${q.ans}`;
         }
 
         function updateGlobalStats() {
-            const answeredKeys = Object.keys(userState.userAnswers);
-            const totalAttempted = answeredKeys.length;
+            // Calculate total unique answered questions across all scopes
+            const allQMap = getAllQuestionsMap();
+            const uniqueAttemptedMap = {};
+            let totalCorrect = 0;
 
-            let correctCount = 0;
-            let allQuestionsMap = {};
-            rawModulesData.forEach(m => {
-                m.questions.forEach(q => {
-                    allQuestionsMap[q.id] = q.ans;
+            Object.keys(userState.userAnswers).forEach(scopeKey => {
+                const scopeObj = userState.userAnswers[scopeKey];
+                Object.keys(scopeObj).forEach(qId => {
+                    if (scopeObj[qId] !== undefined) {
+                        uniqueAttemptedMap[qId] = scopeObj[qId];
+                    }
                 });
             });
 
-            answeredKeys.forEach(qId => {
-                if (userState.userAnswers[qId] === allQuestionsMap[qId]) {
-                    correctCount++;
+            const totalAttempted = Object.keys(uniqueAttemptedMap).length;
+
+            Object.keys(uniqueAttemptedMap).forEach(qId => {
+                if (allQMap[qId] && uniqueAttemptedMap[qId] === allQMap[qId].ans) {
+                    totalCorrect++;
                 }
             });
 
-            const accuracy = totalAttempted > 0 ? Math.round((correctCount / totalAttempted) * 100) : 0;
+            const accuracy = totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 0;
 
             document.getElementById('statTotalQ').innerText = TOTAL_ALL_QUESTIONS;
             document.getElementById('statAttempted').innerText = totalAttempted;
             document.getElementById('statAccuracy').innerText = accuracy + '%';
-            document.getElementById('statBookmarked').innerText = userState.bookmarks.length;
+
+            const bmCount = userState.bookmarks.length;
+            document.getElementById('statBookmarked').innerText = bmCount;
+            document.getElementById('headerBookmarkCount').innerText = bmCount;
         }
 
         function showLandingView() {
@@ -702,14 +951,42 @@ Correct Answer: Option ${q.ans}`;
             document.getElementById('statsBar').classList.remove('d-none');
             document.getElementById('quizView').classList.add('d-none');
             document.getElementById('summaryView').classList.add('d-none');
+            document.getElementById('bookmarksView').classList.add('d-none');
             renderModulesGrid();
             updateGlobalStats();
         }
 
-        function startPracticeMode(mode, moduleId = null) {
+        function initiatePracticeSession(mode, moduleId = null) {
+            const scopeKey = mode === 'all' ? 'all' : moduleId;
+            const savedIdx = userState.savedIndexes[scopeKey] || 0;
+            const scopeAnswers = getScopeAnswers(scopeKey);
+
+            let targetQuestions = [];
+            if (mode === 'all') {
+                rawModulesData.forEach(m => targetQuestions.push(...m.questions));
+            } else if (mode === 'module') {
+                const mod = rawModulesData.find(m => m.id === moduleId);
+                targetQuestions = mod ? mod.questions : [];
+            }
+
+            const hasAnsweredInScope = targetQuestions.some(q => scopeAnswers[q.id] !== undefined);
+
+            if (savedIdx > 0 || hasAnsweredInScope) {
+                pendingSessionTarget = { mode, moduleId };
+                const titleText = mode === 'all' ? "All Questions Session" : (rawModulesData.find(m => m.id === moduleId)?.title || "Practice Session");
+                document.getElementById('resumeModalTitle').innerText = `Start or Resume ${titleText}?`;
+                document.getElementById('resumeModalBody').innerText = `You have existing answers or saved progress for ${titleText}. Would you like to resume from Question ${savedIdx + 1} or start fresh from the beginning?`;
+
+                const modal = new bootstrap.Modal(document.getElementById('resumePromptModal'));
+                modal.show();
+            } else {
+                startPracticeMode(mode, moduleId, 0);
+            }
+        }
+
+        function startPracticeMode(mode, moduleId = null, startFromIndex = 0) {
             currentSession.mode = mode;
             currentSession.moduleId = moduleId;
-            currentSession.currentIndex = 0;
 
             if (mode === 'all') {
                 currentSession.questions = [];
@@ -721,8 +998,11 @@ Correct Answer: Option ${q.ans}`;
                 document.getElementById('quizModuleBadge').innerText = mod ? mod.title : "Practice";
             }
 
+            currentSession.currentIndex = (startFromIndex >= 0 && startFromIndex < currentSession.questions.length) ? startFromIndex : 0;
+
             document.getElementById('landingView').classList.add('d-none');
             document.getElementById('summaryView').classList.add('d-none');
+            document.getElementById('bookmarksView').classList.add('d-none');
             document.getElementById('quizView').classList.remove('d-none');
             document.getElementById('statsBar').classList.add('d-none');
 
@@ -732,6 +1012,12 @@ Correct Answer: Option ${q.ans}`;
         function renderCurrentQuestion() {
             const q = currentSession.questions[currentSession.currentIndex];
             if (!q) return;
+
+            const scopeKey = currentSession.mode === 'all' ? 'all' : currentSession.moduleId;
+            if (scopeKey) {
+                userState.savedIndexes[scopeKey] = currentSession.currentIndex;
+                saveState();
+            }
 
             const total = currentSession.questions.length;
             const currentNum = currentSession.currentIndex + 1;
@@ -745,37 +1031,28 @@ Correct Answer: Option ${q.ans}`;
 
             document.getElementById('questionText').innerText = `${currentNum}. ${q.q}`;
 
-            // Reset Feedback and AI box
             document.getElementById('feedbackAlert').classList.add('d-none');
             document.getElementById('aiExplanationBox').classList.add('d-none');
 
-            // Check Bookmark state
             const isBookmarked = userState.bookmarks.includes(q.id);
-            const bmIcon = document.getElementById('bookmarkIcon');
-            bmIcon.className = isBookmarked ? "bi bi-bookmark-fill text-warning" : "bi bi-bookmark";
+            document.getElementById('bookmarkIcon').className = isBookmarked ? "bi bi-bookmark-fill text-warning" : "bi bi-bookmark";
 
-            // Render Options
             const optionsContainer = document.getElementById('optionsContainer');
             optionsContainer.innerHTML = '';
 
-            const existingAns = userState.userAnswers[q.id];
+            const scopeAnswers = getScopeAnswers(scopeKey);
+            const existingAns = scopeAnswers[q.id];
 
             q.options.forEach(opt => {
-                const optionKey = opt.trim().charAt(0); // 'A', 'B', 'C', or 'D'
+                const optionKey = opt.trim().charAt(0);
                 const btn = document.createElement('button');
                 btn.className = 'btn option-btn p-3 rounded-3 bg-body text-start';
 
                 if (existingAns) {
                     btn.disabled = true;
-                    if (optionKey === q.ans) {
-                        btn.classList.add('show-actual-correct');
-                    }
+                    if (optionKey === q.ans) btn.classList.add('show-actual-correct');
                     if (optionKey === existingAns) {
-                        if (existingAns === q.ans) {
-                            btn.classList.add('selected-correct');
-                        } else {
-                            btn.classList.add('selected-wrong');
-                        }
+                        btn.classList.add(existingAns === q.ans ? 'selected-correct' : 'selected-wrong');
                     }
                 } else {
                     btn.onclick = () => handleAnswerSelect(q, optionKey);
@@ -785,12 +1062,10 @@ Correct Answer: Option ${q.ans}`;
                 optionsContainer.appendChild(btn);
             });
 
-            // Show Feedback if already answered
             if (existingAns) {
                 showFeedback(existingAns === q.ans, q.ans);
             }
 
-            // Prev/Next Button Controls
             document.getElementById('prevBtn').disabled = currentSession.currentIndex === 0;
             const nextBtn = document.getElementById('nextBtn');
             if (currentSession.currentIndex === total - 1) {
@@ -801,7 +1076,9 @@ Correct Answer: Option ${q.ans}`;
         }
 
         function handleAnswerSelect(q, selectedOptionKey) {
-            userState.userAnswers[q.id] = selectedOptionKey;
+            const scopeKey = currentSession.mode === 'all' ? 'all' : currentSession.moduleId;
+            const scopeAnswers = getScopeAnswers(scopeKey);
+            scopeAnswers[q.id] = selectedOptionKey;
             saveState();
             renderCurrentQuestion();
         }
@@ -820,7 +1097,7 @@ Correct Answer: Option ${q.ans}`;
             } else {
                 feedbackAlert.classList.add('alert-danger');
                 feedbackTitle.innerText = "Incorrect";
-                feedbackMsg.innerText = `The correct option is ${correctAns}.`;
+                feedbackMsg.innerText = `The correct option is Option ${correctAns}.`;
             }
         }
 
@@ -848,28 +1125,101 @@ Correct Answer: Option ${q.ans}`;
             }
         }
 
+        function showBookmarksReviewView() {
+            document.getElementById('landingView').classList.add('d-none');
+            document.getElementById('quizView').classList.add('d-none');
+            document.getElementById('summaryView').classList.add('d-none');
+            document.getElementById('bookmarksView').classList.remove('d-none');
+            document.getElementById('statsBar').classList.add('d-none');
+
+            renderBookmarksContainer();
+        }
+
+        function renderBookmarksContainer() {
+            const container = document.getElementById('bookmarksContainer');
+            container.innerHTML = '';
+
+            const allQMap = getAllQuestionsMap();
+            const bookmarkedQuestions = userState.bookmarks.map(id => allQMap[id]).filter(Boolean);
+
+            if (bookmarkedQuestions.length === 0) {
+                container.innerHTML = `
+          <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-body">
+            <i class="bi bi-bookmark-x text-muted display-4 mb-3"></i>
+            <h3 class="h5 fw-bold">No Bookmarked Questions</h3>
+            <p class="text-muted small mb-4">Click the bookmark icon on any question during practice to save it here for quick reference.</p>
+            <div>
+              <button class="btn btn-primary rounded-3" onclick="showLandingView()">Return to Dashboard</button>
+            </div>
+          </div>
+        `;
+                return;
+            }
+
+            bookmarkedQuestions.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = 'card border-0 shadow-sm rounded-4 p-4 bg-body';
+
+                const optionsList = q.options.map(opt => {
+                    const optKey = opt.trim().charAt(0);
+                    const isCorrect = optKey === q.ans;
+                    return `<div class="p-2.5 rounded-3 mb-1.5 border small ${isCorrect ? 'bg-success-subtle border-success text-success fw-semibold' : 'bg-body-tertiary'}">
+            ${opt} ${isCorrect ? '<span class="badge bg-success ms-2">Correct Answer</span>' : ''}
+          </div>`;
+                }).join('');
+
+                const explainBoxId = `bookmark_ai_explain_${q.id}`;
+
+                card.innerHTML = `
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="fw-bold fs-6">${idx + 1}. ${q.q}</div>
+            <button class="btn btn-sm btn-outline-warning text-dark border-0 ms-2" onclick="removeBookmarkFromView('${q.id}')" title="Remove Bookmark">
+              <i class="bi bi-bookmark-fill text-warning fs-5"></i>
+            </button>
+          </div>
+          <div class="mb-3">${optionsList}</div>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="badge bg-secondary-subtle text-secondary rounded-pill">Answer: Option ${q.ans}</span>
+            <button class="btn btn-sm btn-outline-primary rounded-3" onclick="explainSpecificQuestionWithAI('${q.id}', '${explainBoxId}')">
+              <i class="bi bi-stars me-1"></i> Explain with AI
+            </button>
+          </div>
+          <div id="${explainBoxId}" class="mt-3 p-3 rounded-3 ai-box d-none"></div>
+        `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function removeBookmarkFromView(qId) {
+            const idx = userState.bookmarks.indexOf(qId);
+            if (idx > -1) {
+                userState.bookmarks.splice(idx, 1);
+                saveState();
+                renderBookmarksContainer();
+            }
+        }
+
         function openGridModal() {
             const container = document.getElementById('modalGridContainer');
             container.innerHTML = '';
+
+            const scopeKey = currentSession.mode === 'all' ? 'all' : currentSession.moduleId;
+            const scopeAnswers = getScopeAnswers(scopeKey);
 
             currentSession.questions.forEach((q, idx) => {
                 const btn = document.createElement('button');
                 btn.className = 'btn grid-nav-item';
 
-                const userAns = userState.userAnswers[q.id];
+                const userAns = scopeAnswers[q.id];
                 if (userAns) {
-                    if (userAns === q.ans) {
-                        btn.classList.add('btn-success');
-                    } else {
-                        btn.classList.add('btn-danger');
-                    }
+                    btn.classList.add(userAns === q.ans ? 'btn-success' : 'btn-danger');
                 } else {
                     btn.classList.add('btn-outline-secondary');
                 }
 
-                if (idx === currentSession.currentIndex) {
-                    btn.classList.add('border-3', 'border-primary');
-                }
+                if (userState.bookmarks.includes(q.id)) btn.classList.add('border', 'border-warning');
+                if (idx === currentSession.currentIndex) btn.classList.add('border-3', 'border-primary');
 
                 btn.innerText = idx + 1;
                 btn.onclick = () => {
@@ -892,15 +1242,16 @@ Correct Answer: Option ${q.ans}`;
             document.getElementById('summaryView').classList.remove('d-none');
             document.getElementById('aiAnalysisContainer').classList.add('d-none');
 
+            const scopeKey = currentSession.mode === 'all' ? 'all' : currentSession.moduleId;
+            const scopeAnswers = getScopeAnswers(scopeKey);
+
             let correctCount = 0;
             currentSession.questions.forEach(q => {
-                if (userState.userAnswers[q.id] === q.ans) {
-                    correctCount++;
-                }
+                if (scopeAnswers[q.id] === q.ans) correctCount++;
             });
 
             const total = currentSession.questions.length;
-            const pct = Math.round((correctCount / total) * 100);
+            const pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
 
             document.getElementById('summaryScore').innerText = `${correctCount} / ${total}`;
             document.getElementById('summaryPercent').innerText = `${pct}% Accuracy`;
@@ -912,19 +1263,29 @@ Correct Answer: Option ${q.ans}`;
             const reviewList = document.getElementById('reviewList');
             reviewList.innerHTML = '';
 
+            const scopeKey = currentSession.mode === 'all' ? 'all' : currentSession.moduleId;
+            const scopeAnswers = getScopeAnswers(scopeKey);
+
             currentSession.questions.forEach((q, idx) => {
-                const userAns = userState.userAnswers[q.id];
+                const userAns = scopeAnswers[q.id];
                 const isCorrect = userAns === q.ans;
+                const isBookmarked = userState.bookmarks.includes(q.id);
 
                 if (filter === 'correct' && !isCorrect) return;
                 if (filter === 'wrong' && (isCorrect || !userAns)) return;
+                if (filter === 'bookmarked' && !isBookmarked) return;
 
                 const card = document.createElement('div');
                 card.className = `card border-0 shadow-sm rounded-4 p-3 bg-body border-start border-4 ${isCorrect ? 'border-success' : 'border-danger'
                     }`;
 
                 card.innerHTML = `
-          <div class="fw-bold mb-2">${idx + 1}. ${q.q}</div>
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div class="fw-bold">${idx + 1}. ${q.q}</div>
+            <button class="btn btn-sm text-warning p-0" onclick="toggleBookmarkInReview('${q.id}', this)" title="Bookmark Question">
+              <i class="${isBookmarked ? 'bi bi-bookmark-fill' : 'bi bi-bookmark'}"></i>
+            </button>
+          </div>
           <div class="small mb-1">Your Answer: <span class="${isCorrect ? 'text-success fw-bold' : 'text-danger fw-bold'}">${userAns || 'Not Answered'}</span></div>
           <div class="small text-muted">Correct Answer: <span class="fw-bold text-success">Option ${q.ans}</span></div>
         `;
@@ -933,50 +1294,130 @@ Correct Answer: Option ${q.ans}`;
             });
         }
 
+        function toggleBookmarkInReview(qId, btn) {
+            const idx = userState.bookmarks.indexOf(qId);
+            if (idx > -1) {
+                userState.bookmarks.splice(idx, 1);
+                btn.querySelector('i').className = 'bi bi-bookmark';
+            } else {
+                userState.bookmarks.push(qId);
+                btn.querySelector('i').className = 'bi bi-bookmark-fill';
+            }
+            saveState();
+        }
+
         function filterReview(filter, btnElement) {
-            document.querySelectorAll('#summaryView .btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.review-filter-btn').forEach(b => b.classList.remove('active'));
             if (btnElement) btnElement.classList.add('active');
             renderReviewList(filter);
         }
 
-        function restartCurrentSession() {
-            currentSession.currentIndex = 0;
-            document.getElementById('summaryView').classList.add('d-none');
-            document.getElementById('quizView').classList.remove('d-none');
-            renderCurrentQuestion();
-        }
+        function resetWeekData(weekId) {
+            const mod = rawModulesData.find(m => m.id === weekId);
+            if (!mod) return;
 
-        function openAiModal() {
-            const modal = new bootstrap.Modal(document.getElementById('aiGeneratorModal'));
-            modal.show();
-        }
-
-        // -------------------------------------------------------------
-        // THEME CONTROLLER
-        // -------------------------------------------------------------
-        function applyTheme(theme) {
-            userState.theme = theme;
-            document.documentElement.setAttribute('data-bs-theme', theme);
-            const icon = document.getElementById('themeIcon');
-            if (theme === 'dark') {
-                icon.className = 'bi bi-sun-fill text-warning';
-            } else {
-                icon.className = 'bi bi-moon-stars-fill';
+            if (confirm(`Are you sure you want to reset your answers and saved progress for ${mod.title}?`)) {
+                userState.userAnswers[weekId] = {};
+                delete userState.savedIndexes[weekId];
+                saveState();
+                renderModulesGrid();
             }
         }
 
-        document.getElementById('themeToggleBtn').addEventListener('click', () => {
-            const newTheme = userState.theme === 'light' ? 'dark' : 'light';
-            applyTheme(newTheme);
-            saveState();
-        });
+        function resetAllData() {
+            if (confirm("Are you sure you want to reset ALL practice data across all weeks and Practice All sessions? Bookmarked questions will be preserved.")) {
+                userState.userAnswers = {};
+                userState.savedIndexes = {};
+                saveState();
+                showLandingView();
+            }
+        }
 
-        // -------------------------------------------------------------
-        // INITIALIZATION
-        // -------------------------------------------------------------
-        window.addEventListener('DOMContentLoaded', () => {
+        function applyTheme(theme) {
+            userState.theme = theme;
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            document.getElementById('themeIcon').className = theme === 'dark' ? 'bi bi-sun-fill text-warning' : 'bi bi-moon-stars-fill';
+        }
+
+        // App Initialization
+        document.addEventListener('DOMContentLoaded', () => {
             loadState();
             showLandingView();
+
+            // Navigation & Header Event Listeners
+            document.getElementById('navHomeBtn').addEventListener('click', showLandingView);
+            document.getElementById('exitQuizBtn').addEventListener('click', showLandingView);
+            document.getElementById('exitBookmarksBtn').addEventListener('click', showLandingView);
+            document.getElementById('summaryReturnHomeBtn').addEventListener('click', showLandingView);
+
+            document.getElementById('practiceAllBtn').addEventListener('click', () => initiatePracticeSession('all'));
+            document.getElementById('resetAllBtn').addEventListener('click', resetAllData);
+
+            document.getElementById('viewBookmarksHeaderBtn').addEventListener('click', showBookmarksReviewView);
+            document.getElementById('practiceBookmarksBtn').addEventListener('click', showBookmarksReviewView);
+            document.getElementById('statBookmarkedCard').addEventListener('click', showBookmarksReviewView);
+
+            // Modal Resume & Reset Actions
+            document.getElementById('resumeSessionBtn').addEventListener('click', () => {
+                const modalEl = document.getElementById('resumePromptModal');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+
+                if (pendingSessionTarget) {
+                    const scopeKey = pendingSessionTarget.mode === 'all' ? 'all' : pendingSessionTarget.moduleId;
+                    const savedIdx = userState.savedIndexes[scopeKey] || 0;
+                    startPracticeMode(pendingSessionTarget.mode, pendingSessionTarget.moduleId, savedIdx);
+                }
+            });
+
+            document.getElementById('restartSessionBtn').addEventListener('click', () => {
+                const modalEl = document.getElementById('resumePromptModal');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+
+                if (pendingSessionTarget) {
+                    const mode = pendingSessionTarget.mode;
+                    const moduleId = pendingSessionTarget.moduleId;
+                    const scopeKey = mode === 'all' ? 'all' : moduleId;
+
+                    userState.savedIndexes[scopeKey] = 0;
+                    userState.userAnswers[scopeKey] = {};
+
+                    saveState();
+                    startPracticeMode(mode, moduleId, 0);
+                }
+            });
+
+            // Question Controls
+            document.getElementById('prevBtn').addEventListener('click', () => navigateQuestion(-1));
+            document.getElementById('nextBtn').addEventListener('click', () => navigateQuestion(1));
+            document.getElementById('openGridBtn').addEventListener('click', openGridModal);
+            document.getElementById('bookmarkBtn').addEventListener('click', toggleCurrentBookmark);
+
+            document.getElementById('explainAiBtn').addEventListener('click', explainCurrentQuestionWithAI);
+            document.getElementById('summaryAiAnalysisBtn').addEventListener('click', analyzePerformanceWithAI);
+            document.getElementById('summaryRetryBtn').addEventListener('click', () => initiatePracticeSession(currentSession.mode, currentSession.moduleId));
+
+            document.getElementById('openAiModalBtn').addEventListener('click', () => {
+                const modal = new bootstrap.Modal(document.getElementById('aiGeneratorModal'));
+                modal.show();
+            });
+
+            document.getElementById('generateQuestionBtn').addEventListener('click', generateAIQuestion);
+
+            document.getElementById('themeToggleBtn').addEventListener('click', () => {
+                const newTheme = userState.theme === 'light' ? 'dark' : 'light';
+                applyTheme(newTheme);
+                saveState();
+            });
+
+            // Review filter buttons
+            document.querySelectorAll('.review-filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const filter = e.target.getAttribute('data-filter');
+                    filterReview(filter, e.target);
+                });
+            });
         });
     </script>
 </body>

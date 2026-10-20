@@ -1,894 +1,876 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MCQ Practice Portal - Mental Health & Wellbeing</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MCQ Practice Portal - Mental Health & Wellbeing</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Google Fonts Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <style>
+    :root {
+      --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+      --transition-speed: 0.2s;
+    }
 
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
+    body {
+      font-family: var(--font-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+    }
 
-    <style>
-        :root {
-            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
-            --transition-speed: 0.2s;
-        }
+    .app-header {
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
 
-        body {
-            font-family: var(--font-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            transition: background-color var(--transition-speed), color var(--transition-speed);
-        }
+    [data-bs-theme="dark"] .app-header {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
 
-        .app-header {
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-        }
+    .module-card {
+      transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
 
-        [data-bs-theme="dark"] .app-header {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
+    [data-bs-theme="dark"] .module-card {
+      border: 1px solid rgba(255,255,255,0.08);
+    }
 
-        .module-card {
-            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-        }
+    .module-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.06) !important;
+    }
 
-        [data-bs-theme="dark"] .module-card {
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
+    .option-btn {
+      text-align: left;
+      white-space: normal;
+      transition: all var(--transition-speed) ease;
+      border: 1.5px solid var(--bs-border-color);
+    }
 
-        .module-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06) !important;
-        }
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--bs-primary);
+      background-color: rgba(13, 110, 253, 0.05);
+    }
 
-        .option-btn {
-            text-align: left;
-            white-space: normal;
-            transition: all var(--transition-speed) ease;
-            border: 1.5px solid var(--bs-border-color);
-        }
+    .option-btn.selected-correct {
+      background-color: rgba(25, 135, 84, 0.15) !important;
+      border-color: #198754 !important;
+      color: #198754 !important;
+      font-weight: 600;
+    }
 
-        .option-btn:hover:not(:disabled) {
-            border-color: var(--bs-primary);
-            background-color: rgba(13, 110, 253, 0.05);
-        }
+    .option-btn.selected-wrong {
+      background-color: rgba(220, 53, 69, 0.15) !important;
+      border-color: #dc3545 !important;
+      color: #dc3545 !important;
+      font-weight: 600;
+    }
 
-        .option-btn.selected-correct {
-            background-color: rgba(25, 135, 84, 0.15) !important;
-            border-color: #198754 !important;
-            color: #198754 !important;
-            font-weight: 600;
-        }
+    .option-btn.show-actual-correct {
+      border-color: #198754 !important;
+      background-color: rgba(25, 135, 84, 0.08) !important;
+    }
 
-        .option-btn.selected-wrong {
-            background-color: rgba(220, 53, 69, 0.15) !important;
-            border-color: #dc3545 !important;
-            color: #dc3545 !important;
-            font-weight: 600;
-        }
+    .grid-nav-item {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 8px;
+    }
 
-        .option-btn.show-actual-correct {
-            border-color: #198754 !important;
-            background-color: rgba(25, 135, 84, 0.08) !important;
-        }
+    .ai-box {
+      border-left: 4px solid var(--bs-primary);
+      background-color: rgba(13, 110, 253, 0.04);
+    }
 
-        .grid-nav-item {
-            width: 38px;
-            height: 38px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            font-weight: 600;
-            border-radius: 8px;
-        }
+    .progress-thin {
+      height: 6px;
+    }
 
-        .ai-box {
-            border-left: 4px solid var(--bs-primary);
-            background-color: rgba(13, 110, 253, 0.04);
-        }
-
-        .progress-thin {
-            height: 6px;
-        }
-
-        .cursor-pointer {
-            cursor: pointer;
-        }
-    </style>
+    .cursor-pointer {
+      cursor: pointer;
+    }
+  </style>
 </head>
-
 <body class="bg-body-tertiary">
 
-    <header class="app-header sticky-top bg-body py-2">
-        <div class="container d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center gap-2 cursor-pointer" id="navHomeBtn">
-                <i class="bi bi-journal-check text-primary fs-3"></i>
-                <div>
-                    <h1 class="h5 m-0 fw-bold">MCQ Practice Portal</h1>
-                    <p class="small text-muted m-0 d-none d-sm-block">Mental Health & Wellbeing Practice Hub</p>
-                </div>
-            </div>
-
-            <div class="d-flex align-items-center gap-2">
-                <button class="btn btn-outline-warning btn-sm rounded-pill" id="viewBookmarksHeaderBtn">
-                    <i class="bi bi-bookmark-fill me-1"></i> <span class="d-none d-sm-inline">Bookmarks</span> (<span
-                        id="headerBookmarkCount">0</span>)
-                </button>
-
-                <button
-                    class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center"
-                    id="themeToggleBtn" style="width: 38px; height: 38px;" title="Toggle Dark/Light Mode">
-                    <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
-                </button>
-            </div>
+  <header class="app-header sticky-top bg-body py-2">
+    <div class="container d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-2 cursor-pointer" id="navHomeBtn">
+        <i class="bi bi-journal-check text-primary fs-3"></i>
+        <div>
+          <h1 class="h5 m-0 fw-bold">MCQ Practice Portal</h1>
+          <p class="small text-muted m-0 d-none d-sm-block">Mental Health & Wellbeing Practice Hub</p>
         </div>
-    </header>
+      </div>
 
-    <main class="container py-4 flex-grow-1">
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-outline-warning btn-sm rounded-pill" id="viewBookmarksHeaderBtn">
+          <i class="bi bi-bookmark-fill me-1"></i> <span class="d-none d-sm-inline">Bookmarks</span> (<span id="headerBookmarkCount">0</span>)
+        </button>
 
-        <!-- Global Stats Bar -->
-        <div class="row g-3 mb-4" id="statsBar">
-            <div class="col-6 col-md-3">
-                <div class="p-3 bg-body rounded-4 shadow-sm border text-center">
-                    <div class="text-muted small fw-medium mb-1">Total Questions</div>
-                    <div class="fs-4 fw-bold text-primary" id="statTotalQ">119</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="p-3 bg-body rounded-4 shadow-sm border text-center">
-                    <div class="text-muted small fw-medium mb-1">Attempted</div>
-                    <div class="fs-4 fw-bold text-info" id="statAttempted">0</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="p-3 bg-body rounded-4 shadow-sm border text-center">
-                    <div class="text-muted small fw-medium mb-1">Accuracy</div>
-                    <div class="fs-4 fw-bold text-success" id="statAccuracy">0%</div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3 cursor-pointer" id="statBookmarkedCard">
-                <div class="p-3 bg-body rounded-4 shadow-sm border text-center h-100">
-                    <div class="text-muted small fw-medium mb-1">Bookmarked <i class="bi bi-arrow-right-short"></i>
-                    </div>
-                    <div class="fs-4 fw-bold text-warning" id="statBookmarked">0</div>
-                </div>
-            </div>
+        <button class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center" id="themeToggleBtn" style="width: 38px; height: 38px;" title="Toggle Dark/Light Mode">
+          <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container py-4 flex-grow-1">
+
+    <!-- Global Stats Bar -->
+    <div class="row g-3 mb-4" id="statsBar">
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-body rounded-4 shadow-sm border text-center">
+          <div class="text-muted small fw-medium mb-1">Total Questions</div>
+          <div class="fs-4 fw-bold text-primary" id="statTotalQ">119</div>
         </div>
-
-        <!-- View 1: Landing Dashboard -->
-        <div id="landingView">
-            <div class="row mb-4 align-items-center">
-                <div class="col-md-7">
-                    <h2 class="fw-bold mb-1">Practice Dashboard</h2>
-                    <p class="text-muted mb-0">Select a practice mode or a specific week to begin your revision.</p>
-                </div>
-                <div class="col-md-5 text-md-end mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-md-end">
-                    <button class="btn btn-warning rounded-3 shadow-sm text-dark fw-semibold" id="practiceBookmarksBtn">
-                        <i class="bi bi-bookmark-fill me-1"></i> Review Bookmarks
-                    </button>
-                    <button class="btn btn-primary rounded-3 shadow-sm" id="practiceAllBtn">
-                        <i class="bi bi-lightning-charge-fill me-1"></i> Practice All Questions
-                    </button>
-                    <button class="btn btn-outline-danger rounded-3" id="resetAllBtn"
-                        title="Reset all progress and answers">
-                        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset All Progress
-                    </button>
-                </div>
-            </div>
-
-            <hr class="my-4 opacity-10" />
-
-            <h3 class="h5 fw-bold mb-3 d-flex align-items-center gap-2">
-                <i class="bi bi-calendar-week text-primary"></i> Practice Week Wise
-            </h3>
-
-            <div class="row g-3" id="modulesGrid">
-                <!-- Week modules generated via JS -->
-            </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-body rounded-4 shadow-sm border text-center">
+          <div class="text-muted small fw-medium mb-1">Attempted</div>
+          <div class="fs-4 fw-bold text-info" id="statAttempted">0</div>
         </div>
-
-        <!-- View 2: Quiz Practice Mode -->
-        <div id="quizView" class="d-none">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-                <button class="btn btn-sm btn-outline-secondary rounded-pill" id="exitQuizBtn">
-                    <i class="bi bi-arrow-left me-1"></i> Exit Practice
-                </button>
-
-                <span
-                    class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold"
-                    id="quizModuleBadge">
-                    Week 1
-                </span>
-
-                <button class="btn btn-sm btn-outline-warning rounded-circle" id="bookmarkBtn"
-                    title="Bookmark Question">
-                    <i class="bi bi-bookmark" id="bookmarkIcon"></i>
-                </button>
-            </div>
-
-            <!-- Question Progress Bar -->
-            <div class="mb-3">
-                <div class="d-flex justify-content-between align-items-center small text-muted mb-1">
-                    <span>Question <strong id="currentQNum">1</strong> of <strong id="totalQNum">10</strong></span>
-                    <span id="progressPercent">10%</span>
-                </div>
-                <div class="progress progress-thin rounded-pill">
-                    <div class="progress-bar bg-primary" id="quizProgressBar" role="progressbar" style="width: 10%">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Question Box -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4">
-                    <h2 class="h5 fw-bold mb-4" id="questionText">Loading question...</h2>
-
-                    <div class="d-grid gap-3" id="optionsContainer">
-                        <!-- Options dynamically populated -->
-                    </div>
-
-                    <!-- Answer Feedback Alert -->
-                    <div class="mt-4 p-3 rounded-3 d-none" id="feedbackAlert">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="fw-semibold" id="feedbackTitle">Correct!</div>
-                            <button class="btn btn-sm btn-light border" id="explainAiBtn">
-                                <i class="bi bi-stars text-primary me-1"></i> Explain with AI
-                            </button>
-                        </div>
-                        <div class="small mt-1" id="feedbackMsg"></div>
-                    </div>
-
-                    <!-- AI Concept Explanation Box -->
-                    <div class="mt-3 p-3 rounded-3 ai-box d-none" id="aiExplanationBox"></div>
-                </div>
-            </div>
-
-            <!-- Quiz Navigation -->
-            <div class="d-flex justify-content-between align-items-center">
-                <button class="btn btn-outline-secondary rounded-3" id="prevBtn">
-                    <i class="bi bi-chevron-left me-1"></i> Previous
-                </button>
-
-                <button class="btn btn-outline-primary rounded-3" id="openGridBtn">
-                    <i class="bi bi-grid-3x3-gap me-1"></i> Question Grid
-                </button>
-
-                <button class="btn btn-primary rounded-3" id="nextBtn">
-                    Next <i class="bi bi-chevron-right ms-1"></i>
-                </button>
-            </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-body rounded-4 shadow-sm border text-center">
+          <div class="text-muted small fw-medium mb-1">Accuracy</div>
+          <div class="fs-4 fw-bold text-success" id="statAccuracy">0%</div>
         </div>
-
-        <!-- View 3: Bookmarks Hub (Review Only) -->
-        <div id="bookmarksView" class="d-none">
-            <div class="d-flex align-items-center justify-content-between mb-4">
-                <div>
-                    <button class="btn btn-sm btn-outline-secondary rounded-pill mb-2" id="exitBookmarksBtn">
-                        <i class="bi bi-arrow-left me-1"></i> Return to Dashboard
-                    </button>
-                    <h2 class="h4 fw-bold mb-0"><i class="bi bi-bookmark-fill text-warning me-2"></i>Bookmarked
-                        Questions Review</h2>
-                    <p class="text-muted small m-0">Study and review your bookmarked questions and correct answers.</p>
-                </div>
-            </div>
-
-            <div id="bookmarksContainer" class="d-grid gap-3">
-                <!-- Bookmark Cards rendered here -->
-            </div>
+      </div>
+      <div class="col-6 col-md-3 cursor-pointer" id="statBookmarkedCard">
+        <div class="p-3 bg-body rounded-4 shadow-sm border text-center h-100">
+          <div class="text-muted small fw-medium mb-1">Bookmarked <i class="bi bi-arrow-right-short"></i></div>
+          <div class="fs-4 fw-bold text-warning" id="statBookmarked">0</div>
         </div>
-
-        <!-- View 4: Session Summary & Review -->
-        <div id="summaryView" class="d-none">
-            <div class="card border-0 shadow-sm rounded-4 p-4 text-center mb-4">
-                <div class="mb-3">
-                    <div class="display-5 fw-bold text-primary" id="summaryScore">0 / 0</div>
-                    <div class="text-muted fw-medium" id="summaryPercent">0% Score</div>
-                </div>
-
-                <p class="text-muted mb-4">Great job completing this practice session!</p>
-
-                <div class="d-flex flex-wrap justify-content-center gap-2">
-                    <button class="btn btn-primary rounded-3" id="summaryReturnHomeBtn">
-                        <i class="bi bi-house-door me-1"></i> Return to Dashboard
-                    </button>
-                    <button class="btn btn-outline-primary rounded-3" id="summaryRetryBtn">
-                        <i class="bi bi-arrow-counterclockwise me-1"></i> Practice Again
-                    </button>
-                    <button class="btn btn-outline-success rounded-3" id="summaryAiAnalysisBtn">
-                        <i class="bi bi-stars me-1"></i> AI Performance Analysis
-                    </button>
-                </div>
-            </div>
-
-            <!-- AI Diagnostics Container -->
-            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 ai-box d-none" id="aiAnalysisContainer">
-                <h3 class="h6 fw-bold text-primary mb-3">
-                    <i class="bi bi-stars me-1"></i> Gemini AI Performance & Weak Area Analysis
-                </h3>
-                <div class="small leading-relaxed" id="aiAnalysisBody">
-                    Generating diagnostic feedback...
-                </div>
-            </div>
-
-            <!-- Session Question Breakdown -->
-            <h3 class="h5 fw-bold mb-3">Session Review</h3>
-            <div class="d-flex flex-wrap gap-2 mb-3">
-                <button class="btn btn-sm btn-outline-secondary active review-filter-btn" data-filter="all">All</button>
-                <button class="btn btn-sm btn-outline-success review-filter-btn" data-filter="correct">Correct</button>
-                <button class="btn btn-sm btn-outline-danger review-filter-btn" data-filter="wrong">Incorrect</button>
-                <button class="btn btn-sm btn-outline-warning review-filter-btn"
-                    data-filter="bookmarked">Bookmarked</button>
-            </div>
-
-            <div class="d-grid gap-3" id="reviewList">
-                <!-- Questions Review list -->
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Question Grid Modal -->
-    <div class="modal fade" id="gridModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-4 border-0">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold">Jump to Question</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="d-flex flex-wrap gap-2 justify-content-center" id="modalGridContainer"></div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <!-- Session Resume / Restart Prompt Modal -->
-    <div class="modal fade" id="resumePromptModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-4 border-0">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold" id="resumeModalTitle">Resume Practice Session?</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body py-3">
-                    <p class="text-muted mb-0" id="resumeModalBody">
-                        You have existing answers or progress saved for this session. Would you like to resume from
-                        where you left off or start fresh from the beginning?
-                    </p>
-                </div>
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-outline-danger rounded-3" id="restartSessionBtn">
-                        <i class="bi bi-arrow-counterclockwise me-1"></i> Start Beginning (Reset)
-                    </button>
-                    <button type="button" class="btn btn-primary rounded-3" id="resumeSessionBtn">
-                        <i class="bi bi-play-fill me-1"></i> Resume
-                    </button>
-                </div>
-            </div>
+    <!-- View 1: Landing Dashboard -->
+    <div id="landingView">
+      <div class="row mb-4 align-items-center">
+        <div class="col-md-7">
+          <h2 class="fw-bold mb-1">Practice Dashboard</h2>
+          <p class="text-muted mb-0">Select a practice mode or a specific week to begin your revision.</p>
         </div>
+        <div class="col-md-5 text-md-end mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-md-end">
+          <button class="btn btn-warning rounded-3 shadow-sm text-dark fw-semibold" id="practiceBookmarksBtn">
+            <i class="bi bi-bookmark-fill me-1"></i> Review Bookmarks
+          </button>
+          <button class="btn btn-primary rounded-3 shadow-sm" id="practiceAllBtn">
+            <i class="bi bi-lightning-charge-fill me-1"></i> Practice All Questions
+          </button>
+          <button class="btn btn-outline-danger rounded-3" id="resetAllBtn" title="Reset all progress and answers">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset All Progress
+          </button>
+        </div>
+      </div>
+
+      <hr class="my-4 opacity-10" />
+
+      <h3 class="h5 fw-bold mb-3 d-flex align-items-center gap-2">
+        <i class="bi bi-calendar-week text-primary"></i> Practice Week Wise
+      </h3>
+
+      <div class="row g-3" id="modulesGrid">
+        <!-- Week modules generated via JS -->
+      </div>
     </div>
 
-    <!-- AI Generator Modal -->
-    <div class="modal fade" id="aiGeneratorModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-4 border-0">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold"><i class="bi bi-stars text-primary me-2"></i>Generate AI Question
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body py-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Topic / Concept</label>
-                        <input type="text" class="form-control rounded-3" id="aiTopicInput"
-                            placeholder="e.g. Cognitive Dissonance, Stress Resilience, Attachment Styles" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Difficulty Level</label>
-                        <select class="form-select rounded-3" id="aiDifficultySelect">
-                            <option value="Easy">Easy</option>
-                            <option value="Medium" selected>Medium</option>
-                            <option value="Hard">Hard</option>
-                        </select>
-                    </div>
-                    <div id="aiGenStatus" class="small text-primary d-none mb-3">
-                        <span class="spinner-border spinner-border-sm me-2" role="status"></span> Generating custom MCQ
-                        via Gemini AI...
-                    </div>
-                </div>
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-light rounded-3" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary rounded-3" id="generateQuestionBtn">
-                        Generate & Practice
-                    </button>
-                </div>
-            </div>
+    <!-- View 2: Quiz Practice Mode -->
+    <div id="quizView" class="d-none">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <button class="btn btn-sm btn-outline-secondary rounded-pill" id="exitQuizBtn">
+          <i class="bi bi-arrow-left me-1"></i> Exit Practice
+        </button>
+
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold" id="quizModuleBadge">
+          Week 1
+        </span>
+
+        <button class="btn btn-sm btn-outline-warning rounded-circle" id="bookmarkBtn" title="Bookmark Question">
+          <i class="bi bi-bookmark" id="bookmarkIcon"></i>
+        </button>
+      </div>
+
+      <!-- Question Progress Bar -->
+      <div class="mb-3">
+        <div class="d-flex justify-content-between align-items-center small text-muted mb-1">
+          <span>Question <strong id="currentQNum">1</strong> of <strong id="totalQNum">10</strong></span>
+          <span id="progressPercent">10%</span>
         </div>
+        <div class="progress progress-thin rounded-pill">
+          <div class="progress-bar bg-primary" id="quizProgressBar" role="progressbar" style="width: 10%"></div>
+        </div>
+      </div>
+
+      <!-- Question Box -->
+      <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4">
+          <h2 class="h5 fw-bold mb-4" id="questionText">Loading question...</h2>
+
+          <div class="d-grid gap-3" id="optionsContainer">
+            <!-- Options dynamically populated -->
+          </div>
+
+          <!-- Answer Feedback Alert -->
+          <div class="mt-4 p-3 rounded-3 d-none" id="feedbackAlert">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="fw-semibold" id="feedbackTitle">Correct!</div>
+              <button class="btn btn-sm btn-light border" id="explainAiBtn">
+                <i class="bi bi-stars text-primary me-1"></i> Explain with AI
+              </button>
+            </div>
+            <div class="small mt-1" id="feedbackMsg"></div>
+          </div>
+
+          <!-- AI Concept Explanation Box -->
+          <div class="mt-3 p-3 rounded-3 ai-box d-none" id="aiExplanationBox"></div>
+        </div>
+      </div>
+
+      <!-- Quiz Navigation -->
+      <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-outline-secondary rounded-3" id="prevBtn">
+          <i class="bi bi-chevron-left me-1"></i> Previous
+        </button>
+
+        <button class="btn btn-outline-primary rounded-3" id="openGridBtn">
+          <i class="bi bi-grid-3x3-gap me-1"></i> Question Grid
+        </button>
+
+        <button class="btn btn-primary rounded-3" id="nextBtn">
+          Next <i class="bi bi-chevron-right ms-1"></i>
+        </button>
+      </div>
     </div>
 
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- View 3: Bookmarks Hub (Review Only) -->
+    <div id="bookmarksView" class="d-none">
+      <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+          <button class="btn btn-sm btn-outline-secondary rounded-pill mb-2" id="exitBookmarksBtn">
+            <i class="bi bi-arrow-left me-1"></i> Return to Dashboard
+          </button>
+          <h2 class="h4 fw-bold mb-0"><i class="bi bi-bookmark-fill text-warning me-2"></i>Bookmarked Questions Review</h2>
+          <p class="text-muted small m-0">Study and review your bookmarked questions and correct answers.</p>
+        </div>
+      </div>
 
-    <script>
-        // Dataset containing 12 Weeks / Modules (119 Questions Total)
-        const rawModulesData = [
-            {
-                id: "w1",
-                title: "Week - 1",
-                questions: [
-                    { id: "w1_q1", q: "Which factor best contributes to overall mental wellbeing?", options: ["A) Ability to cope with life challenges", "B) Constant happiness", "C) Avoiding all stress", "D) Ignoring emotions"], ans: "A" },
-                    { id: "w1_q2", q: "Which of the following is the correct sequence of stages in the General Adaptation Syndrome?", options: ["A) Resistance→Alarm→Exhaustion", "B) Alarm→Exhaustion→Resistance", "C) Alarm→Resistance→Exhaustion", "D) Exhaustion→Alarm→Resistance"], ans: "C" },
-                    { id: "w1_q3", q: "Which behaviour reflects healthy coping?", options: ["A) Suppressing feelings", "B) Avoiding problems", "C) Engaging in hobbies", "D) Overthinking situations"], ans: "C" },
-                    { id: "w1_q4", q: "What is a key characteristic of digital overload?", options: ["A) Mental exhaustion from excessive information", "B) Improved focus", "C) Reduced device usage", "D) Increased relaxation"], ans: "A" },
-                    { id: "w1_q5", q: "Meher compares herself to influencers and feels inferior. Which theory explains this?", options: ["A) Operant conditioning", "B) Cognitive dissonance", "C) Social comparison theory", "D) Behavioral theory"], ans: "C" },
-                    { id: "w1_q6", q: "Which of the following is an example of unhealthy social media behavior?", options: ["A) Learning new skills", "B) Connecting with friends", "C) Watching informative content", "D) Comparing oneself constantly with others"], ans: "D" },
-                    { id: "w1_q7", q: "What is the main purpose of relaxation techniques?", options: ["A) Increase stress levels", "B) Improve memory only", "C) Reduce physiological and mental tension", "D) Avoid responsibilities"], ans: "C" },
-                    { id: "w1_q8", q: "Which practice helps in improving self-awareness?", options: ["A) Mindful observation of thoughts", "B) Ignoring emotions", "C) Multitasking", "D) Social withdrawal"], ans: "A" },
-                    { id: "w1_q9", q: "According to Piaget's theory, what is the \"imaginary audience\"?", options: ["A) A group of friends who provide feedback on behavior", "B) The belief that others are constantly watching, noticing, and evaluating oneself", "C) The tendency to imitate people seen in the media", "D) The ability to understand another person's perspective"], ans: "B" }
-                ]
-            },
-            {
-                id: "w2",
-                title: "Week - 2",
-                questions: [
-                    { id: "w2_q1", q: "Peer pressure can best be described as:", options: ["A) Self-motivation", "B) Family expectations", "C) Personal decision-making", "D) Influence from peers to act in certain ways"], ans: "D" },
-                    { id: "w2_q2", q: "Assertiveness helps individuals to:", options: ["A) Please everyone", "B) Express thoughts respectfully", "C) Avoid communication", "D) Dominate others"], ans: "B" },
-                    { id: "w2_q3", q: "Which factor strongly affects body image in adolescents?", options: ["A) Media influence", "B) Weather", "C) Food habits only", "D) Sleep cycle"], ans: "A" },
-                    { id: "w2_q4", q: "What is the purpose of mindfulness?", options: ["A) Focus on past mistakes", "B) Worry about future", "C) Stay present in the moment", "D) Avoid emotions"], ans: "C" },
-                    { id: "w2_q5", q: "Which is a relaxation technique?", options: ["A) Meditation", "B) Overthinking", "C) Isolation", "D) Procrastination"], ans: "A" },
-                    { id: "w2_q6", q: "Emotional regulation refers to:", options: ["A) Suppressing all emotions", "B) Ignoring feelings", "C) Expressing anger freely", "D) Managing emotions effectively"], ans: "D" },
-                    { id: "w2_q7", q: "A student's peers encourage her to join a study group and maintain a healthier routine. Although she initially feels hesitant, the decision aligns with her personal goals and helps her develop better habits. Which aspect most strongly indicates positive peer pressure?", options: ["A) She agrees because she does not want to be excluded", "B) She feels nervous before deciding", "C) The influence aligns with her values and contributes to personal growth", "D) She changes behaviour mainly to gain approval"], ans: "C" },
-                    { id: "w2_q8", q: "Active listening involves:", options: ["A) Interrupting others", "B) Judging quickly", "C) Paying full attention", "D) Ignoring body language"], ans: "C" },
-                    { id: "w2_q9", q: "Building self-esteem means:", options: ["A) Comparing with others", "B) Accepting oneself", "C) Seeking validation only", "D) Avoiding challenges"], ans: "B" },
-                    { id: "w2_q10", q: "Why can body image concerns feel more intense during adolescence?", options: ["A) Adolescents experience very few emotional changes", "B) Heightened emotional volatility can amplify concerns about appearance and self-worth", "C) Adolescents do not care about their appearance", "D) Mood swings reduce concerns about self-worth"], ans: "B" }
-                ]
-            },
-            {
-                id: "w3",
-                title: "Week - 3",
-                questions: [
-                    { id: "w3_q1", q: "When faced with two assignments due on the same day, the best first step is to:", options: ["A) Ignore both assignments", "B) Complete the easier one without planning", "C) Prioritize tasks based on deadlines and importance", "D) Wait until the last minute to decide"], ans: "C" },
-                    { id: "w3_q2", q: "Which is an example of unhealthy coping?", options: ["A) Talking to a friend", "B) Exercise", "C) Journaling", "D) Excessive social media"], ans: "D" },
-                    { id: "w3_q3", q: "Which of the following reflects effective emotional regulation?", options: ["A) Ignoring feelings completely", "B) Recognizing emotions and choosing a response", "C) Reacting immediately without thinking", "D) Blaming others for emotional distress"], ans: "B" },
-                    { id: "w3_q4", q: "A friend is upset, and you respond by saying, \"It sounds like you're feeling disappointed because your project didn't go as planned.\" This demonstrates:", options: ["A) Criticism", "B) Active listening", "C) Giving unwanted advice", "D) Changing the subject"], ans: "B" },
-                    { id: "w3_q5", q: "A student breaks a large assignment into smaller tasks with deadlines. This is an example of:", options: ["A) Goal setting and time management", "B) Avoidance", "C) Emotional suppression", "D) Conflict awareness"], ans: "A" },
-                    { id: "w3_q6", q: "Regular physical activity contributes to mental well-being by:", options: ["A) Increasing stress hormones", "B) Reducing endorphin levels", "C) Causing emotional instability", "D) Enhancing mood through neurochemical changes"], ans: "D" },
-                    { id: "w3_q7", q: "A person who understands others' feelings during conflict shows:", options: ["A) Sympathy only", "B) Indifference", "C) Aggression", "D) Empathy"], ans: "D" },
-                    { id: "w3_q8", q: "A student fails an exam but plans a new study strategy instead of giving up. This best demonstrates:", options: ["A) Avoidance coping", "B) Emotional suppression", "C) Resilience", "D) Denial"], ans: "C" },
-                    { id: "w3_q9", q: "A student disagrees with a classmate but speaks calmly, listens carefully, and looks for a solution that benefits both. This is an example of:", options: ["A) Conflict resolution", "B) Aggressive communication", "C) Emotional avoidance", "D) Passive behaviour"], ans: "A" },
-                    { id: "w3_q10", q: "Which is NOT a component of SMART goals?", options: ["A) Specific", "B) Measurable", "C) Arbitrary", "D) Time-bound"], ans: "C" }
-                ]
-            },
-            {
-                id: "w4",
-                title: "Week - 4",
-                questions: [
-                    { id: "w4_q1", q: "Which of the following is NOT a source of academic pressure?", options: ["A) High expectations from parents", "B) Time constraints", "C) Balanced lifestyle", "D) Fear of failure"], ans: "C" },
-                    { id: "w4_q2", q: "Difficulty in concentration and negative thinking are examples of:", options: ["A) Behavioural symptoms", "B) Emotional symptoms", "C) Physical symptoms", "D) Cognitive symptoms"], ans: "D" },
-                    { id: "w4_q3", q: "Emotional intelligence refers to the ability to:", options: ["A) Solve mathematical problems", "B) Understand and manage emotions", "C) Manage time effectively", "D) Memorize information"], ans: "B" },
-                    { id: "w4_q4", q: "Career Decision Scale (CDS) is used to measure:", options: ["A) Intelligence", "B) Career indecision", "C) Emotional intelligence", "D) Personality traits"], ans: "B" },
-                    { id: "w4_q5", q: "Which of the following is an ethical responsibility of a therapist?", options: ["A) Making all decisions on behalf of the client", "B) Guaranteeing that therapy will always be successful", "C) Maintaining confidentiality and obtaining informed consent", "D) Sharing client information with friends for advice"], ans: "C" },
-                    { id: "w4_q6", q: "Which activity is most helpful for relaxing the mind?", options: ["A) Continuous worrying", "B) Meditation", "C) Skipping meals", "D) Excessive screen time"], ans: "B" },
-                    { id: "w4_q7", q: "A person should seek help when:", options: ["A) Everything is going well", "B) Problems disturb daily routine", "C) Only during holidays", "D) Never"], ans: "B" },
-                    { id: "w4_q8", q: "Which habit improves time management?", options: ["A) Planning tasks", "B) Ignoring deadlines", "C) Studying randomly", "D) Sleeping less"], ans: "A" },
-                    { id: "w4_q9", q: "Social responsibility includes:", options: ["A) Helping others", "B) Ignoring society", "C) Competing always", "D) Focusing only on self"], ans: "A" },
-                    { id: "w4_q10", q: "What is the primary distinction between counselling and psychotherapy?", options: ["A) Counselling focuses only on mental illness, while psychotherapy focuses on education", "B) Counselling is generally shorter-term and addresses specific or everyday concerns, while psychotherapy may be longer-term and addresses deeper mental health concerns", "C) Counselling is provided only by psychiatrists, while psychotherapy is provided only by counsellors", "D) There is no difference between counselling and psychotherapy"], ans: "B" }
-                ]
-            },
-            {
-                id: "w5",
-                title: "Week - 5",
-                questions: [
-                    { id: "w5_q1", q: "What is emotional validation?", options: ["A) Ignoring emotions to stay strong", "B) Accepting and acknowledging one's own or others' emotions", "C) Controlling emotions completely", "D) Avoiding emotional discussions"], ans: "B" },
-                    { id: "w5_q2", q: "What is the main purpose of emotional ventilation?", options: ["A) Suppressing emotions", "B) Expressing emotions in a healthy way", "C) Avoiding emotional experiences", "D) Criticising others' feelings"], ans: "B" },
-                    { id: "w5_q3", q: "Which skill is essential for emotional validation?", options: ["A) Judgment", "B) Active listening", "C) Avoidance", "D) Silence"], ans: "B" },
-                    { id: "w5_q4", q: "Emotional suppression can lead to:", options: ["A) Increased well-being", "B) Better communication", "C) Mental health issues", "D) Emotional clarity"], ans: "C" },
-                    { id: "w5_q5", q: "Which of the following is a type of boundary?", options: ["A) Financial boundary", "B) Emotional boundary", "C) Academic boundary", "D) Political boundary"], ans: "B" },
-                    { id: "w5_q6", q: "What is assertiveness in boundary setting?", options: ["A) Being aggressive", "B) Being passive", "C) Expressing needs clearly and respectfully", "D) Avoiding confrontation"], ans: "C" },
-                    { id: "w5_q7", q: "What helps in managing emotional overwhelm?", options: ["A) Ignoring stress", "B) Mindfulness and grounding", "C) Overworking", "D) Isolation"], ans: "B" },
-                    { id: "w5_q8", q: "Emotional triggers are:", options: ["A) Random thoughts", "B) Situations that provoke emotional reactions", "C) Physical symptoms only", "D) Irrelevant experiences"], ans: "B" },
-                    { id: "w5_q9", q: "Emotional resilience refers to:", options: ["A) Avoiding emotions", "B) Reacting impulsively", "C) Ability to adapt and recover from stress", "D) Ignoring problems"], ans: "C" },
-                    { id: "w5_q10", q: "Social support contributes to:", options: ["A) Increased stress", "B) Emotional resilience", "C) Isolation", "D) Conflict"], ans: "B" }
-                ]
-            },
-            {
-                id: "w6",
-                title: "Week - 6",
-                questions: [
-                    { id: "w6_q1", q: "Journaling helps in:", options: ["A) Stress increase", "B) Confusion", "C) Emotional clarity", "D) Avoidance"], ans: "C" },
-                    { id: "w6_q2", q: "Gratitude journaling improves:", options: ["A) Stress levels", "B) Negative thinking", "C) Fear", "D) Positive mindset"], ans: "D" },
-                    { id: "w6_q3", q: "Movement therapies include:", options: ["A) Dancing and yoga", "B) Sleeping", "C) Watching TV", "D) Studying"], ans: "A" },
-                    { id: "w6_q4", q: "Storytelling helps in:", options: ["A) Increasing anxiety", "B) Ignoring problems", "C) Self-exploration", "D) Avoiding emotions"], ans: "C" },
-                    { id: "w6_q5", q: "Which is a mindfulness technique?", options: ["A) Overthinking", "B) Avoiding study", "C) Panic", "D) Deep breathing"], ans: "D" },
-                    { id: "w6_q6", q: "Exam anxiety can affect:", options: ["A) Only physical health", "B) Only mental health", "C) Both mental and physical health", "D) Neither"], ans: "C" },
-                    { id: "w6_q7", q: "A study schedule helps in:", options: ["A) Increasing stress", "B) Avoiding exams", "C) Managing time effectively", "D) Confusion"], ans: "C" },
-                    { id: "w6_q8", q: "Positive self-talk helps to:", options: ["A) Build confidence", "B) Increase fear", "C) Reduce memory", "D) Create stress"], ans: "A" },
-                    { id: "w6_q9", q: "How do creative arts and therapies support emotional well-being?", options: ["A) By allowing non-verbal communication and reducing stress", "B) By suppressing emotions and causing confusion", "C) By increasing fear and anxiety", "D) By avoiding feelings and memory loss"], ans: "A" },
-                    { id: "w6_q10", q: "What strategies help in managing exam anxiety effectively?", options: ["A) Stress related to exams managed through time planning", "B) Skipping sleep and avoiding study", "C) Happiness before exams and procrastination", "D) Physical strength and ignoring preparation"], ans: "A" }
-                ]
-            },
-            {
-                id: "w7",
-                title: "Week - 7",
-                questions: [
-                    { id: "w7_q1", q: "Relationship trauma may result from:", options: ["A) Trust", "B) Respect", "C) Support", "D) Betrayal or abuse"], ans: "D" },
-                    { id: "w7_q2", q: "Avoidant individuals in relationships tend to:", options: ["A) Seek reassurance", "B) Be overly expressive", "C) Maintain emotional distance", "D) Become dependent"], ans: "C" },
-                    { id: "w7_q3", q: "Which of the following is most important for maintaining a healthy work-life balance?", options: ["A) Ignoring stress", "B) Time management", "C) Overworking", "D) Avoiding responsibility"], ans: "B" },
-                    { id: "w7_q4", q: "Setting healthy personal boundaries primarily helps in:", options: ["A) Increasing stress", "B) Avoiding tasks", "C) Reducing clarity", "D) Preventing burnout"], ans: "D" },
-                    { id: "w7_q5", q: "Healthy friendships are best characterized by:", options: ["A) Competition", "B) Control", "C) Mutual respect", "D) Superiority"], ans: "C" },
-                    { id: "w7_q6", q: "Communication in a secure attachment relationship is generally:", options: ["A) Aggressive", "B) Passive", "C) Avoidant", "D) Open and honest"], ans: "D" },
-                    { id: "w7_q7", q: "Conflict resolution in secure relationships typically involves:", options: ["A) Blaming the other person", "B) Remaining silent", "C) Avoiding the issue", "D) Mutual understanding and problem-solving"], ans: "D" },
-                    { id: "w7_q8", q: "Developing a secure attachment style requires:", options: ["A) Avoiding emotional closeness", "B) Emotional awareness and healthy expression", "C) Ignoring personal needs", "D) Fear of rejection"], ans: "B" },
-                    { id: "w7_q9", q: "According to attachment theory, which parenting pattern is most likely to contribute to the development of an anxious attachment style in children?", options: ["A) Consistent warmth with predictable responsiveness", "B) Emotionally distant and consistently rejecting caregiving", "C) Inconsistent caregiving with unpredictable responsiveness to the child's needs", "D) Encouraging age-appropriate independence while remaining emotionally available"], ans: "C" },
-                    { id: "w7_q10", q: "A person with a history of relationship trauma has worked through therapy and developed a secure attachment style. Which behaviour best reflects this change?", options: ["A) Avoiding intimate relationships to prevent emotional pain", "B) Depending entirely on a partner for emotional security and decision-making", "C) Communicating needs openly, maintaining healthy boundaries, and tolerating emotional vulnerability without excessive fear", "D) Suppressing emotions and focusing exclusively on work to avoid interpersonal closeness"], ans: "C" }
-                ]
-            },
-            {
-                id: "w8",
-                title: "Week - 8",
-                questions: [
-                    { id: "w8_q1", q: "What is the key difference between intrinsic and extrinsic motivation?", options: ["A) Intrinsic motivation is driven by external rewards", "B) Intrinsic motivation arises from internal satisfaction, while extrinsic comes from external rewards", "C) Extrinsic motivation is self-generated", "D) Both types involve competition"], ans: "B" },
-                    { id: "w8_q2", q: "During a mental health emergency, what should a professional focus on first?", options: ["A) Gathering paperwork", "B) Making assumptions", "C) Ensuring safety and stabilizing the individual", "D) Discussing past history"], ans: "C" },
-                    { id: "w8_q3", q: "How does positive reinforcement influence motivation?", options: ["A) It increases the likelihood of repeating desired behaviours by rewarding them", "B) It provides punishment for poor performance", "C) It discourages repetition of behaviours", "D) It delays goal achievement"], ans: "A" },
-                    { id: "w8_q4", q: "Why is aligning goals with personal values important for motivation?", options: ["A) It helps reduce emotional attachment", "B) It decreases goal clarity", "C) It strengthens commitment and engagement", "D) It prevents decision-making"], ans: "C" },
-                    { id: "w8_q5", q: "Which skill is essential in Psychological First Aid?", options: ["A) Debating the cause of the crisis", "B) Active listening and empathic presence", "C) Avoiding eye contact", "D) Giving unsolicited advice"], ans: "B" },
-                    { id: "w8_q6", q: "Which of the following is a warning sign of suicidal ideation in students?", options: ["A) Improved academic performance", "B) Talking about feeling hopeless or being a burden", "C) Expressing excitement about future plans", "D) Increased interest in group activities"], ans: "B" },
-                    { id: "w8_q7", q: "What is a key strategy for approaching someone who may be thinking about suicide?", options: ["A) Avoid asking direct questions", "B) Use vague suggestions", "C) Ignore signs unless they ask for help", "D) Speak openly, with compassion and without judgment"], ans: "D" },
-                    { id: "w8_q8", q: "What defines resilience in the context of mental health?", options: ["A) Avoiding emotional expression", "B) The ability to adapt and recover from adversity", "C) Suppressing difficult experiences", "D) Always feeling happy regardless of circumstances"], ans: "B" },
-                    { id: "w8_q9", q: "Which strategy helps cultivate resilience during a crisis?", options: ["A) Ignoring emotions and focusing only on tasks", "B) Denying the impact of stress", "C) Practicing optimism and emotional awareness", "D) Isolating oneself to prevent burdening others"], ans: "C" },
-                    { id: "w8_q10", q: "What is an effective way to prevent burnout?", options: ["A) Setting boundaries and prioritizing self-care", "B) Ignoring personal needs", "C) Taking on more responsibilities", "D) Avoiding breaks to maintain productivity"], ans: "A" }
-                ]
-            },
-            {
-                id: "w9",
-                title: "Week - 9",
-                questions: [
-                    { id: "w9_q1", q: "What is one way to prepare well for a meeting with a supervisor?", options: ["A) Arrive with no agenda or notes", "B) Send your supervisor a brief agenda in advance", "C) Wait for the supervisor to ask all questions", "D) Only discuss problems you can solve yourself"], ans: "B" },
-                    { id: "w9_q2", q: "Which practice supports trust in a mentor-student relationship?", options: ["A) Sharing only partial information to avoid criticism", "B) Asking for extensions right before every deadline", "C) Promising effort without updating on progress", "D) Meeting deadlines and being honest about delays"], ans: "D" },
-                    { id: "w9_q3", q: "Why is it important to ask clarifying questions of a supervisor?", options: ["A) To make the meeting last longer", "B) To confirm that you understand the task correctly", "C) To show that you disagree with their instructions", "D) To avoid asking for feedback later"], ans: "B" },
-                    { id: "w9_q4", q: "Which of the following best describes a respectful mentor-student dynamic?", options: ["A) Both parties respect time, boundaries, and communication norms", "B) The student avoids all emails and only speaks in class", "C) The student ignores feedback but praises the mentor", "D) The mentor makes all decisions without student input"], ans: "A" },
-                    { id: "w9_q5", q: "What is most likely to weaken a supervisory relationship?", options: ["A) Regular progress updates and openness about challenges", "B) Being honest about not understanding part of the task", "C) Repeatedly missing deadlines without explanation", "D) Asking for help whenever you feel stuck"], ans: "C" },
-                    { id: "w9_q6", q: "Which message style is most appropriate for official communication with a supervisor?", options: ["A) Very casual, with emojis and slang", "B) Written only in voice-note form", "C) Extremely long and detailed for every small issue", "D) Polite, clear, and professional in tone"], ans: "D" },
-                    { id: "w9_q7", q: "What is a sign of a healthy academic relationship with a mentor?", options: ["A) The student hides struggles to appear perfect", "B) Both parties respect each other's time and boundaries", "C) The mentor never checks on progress", "D) The student rarely asks questions"], ans: "B" },
-                    { id: "w9_q8", q: "Which of the following is helpful when you feel confused about your supervisor's instructions?", options: ["A) Ask for examples or clarification politely", "B) Stay silent and hope you figure it out later", "C) Immediately switch to a different mentor", "D) Ignore the instructions and work in your own way"], ans: "A" },
-                    { id: "w9_q9", q: "Why is it important to be honest about your workload with a supervisor?", options: ["A) It guarantees you will get easier tasks", "B) It helps them suggest realistic timelines and priorities", "C) It shifts full responsibility for planning onto you", "D) It proves that you are overqualified"], ans: "B" },
-                    { id: "w9_q10", q: "Which behavior shows respect for a mentor's expertise?", options: ["A) Repeatedly arguing without evidence", "B) Ignoring their suggestions and doing your own thing", "C) Listening carefully and considering their advice", "D) Publicly criticizing them in front of peers"], ans: "C" }
-                ]
-            },
-            {
-                id: "w10",
-                title: "Week - 10",
-                questions: [
-                    { id: "w10_q1", q: "Which behaviour demonstrates emotional intelligence in conflict resolution?", options: ["A) Listening actively and validating feelings", "B) Ignoring the other person's perspective", "C) Responding with aggression immediately", "D) Avoiding all communication"], ans: "A" },
-                    { id: "w10_q2", q: "When recovering from illness, which choice reflects balanced self-care?", options: ["A) Ignoring medical advice", "B) Refusing to adjust routines at all", "C) Gradually resuming responsibilities with rest breaks", "D) Overexerting to \"catch up\" quickly"], ans: "C" },
-                    { id: "w10_q3", q: "Which element most influences identity exploration in adolescence?", options: ["A) Physical appearance alone", "B) Daily temperature changes", "C) Random coincidences only", "D) Experimenting with different roles and values"], ans: "D" },
-                    { id: "w10_q4", q: "What improves the quality of group decision-making?", options: ["A) Considering diverse viewpoints before deciding", "B) Acting on impulse without discussion", "C) Copying the loudest voice in the room", "D) Avoiding responsibility for choices"], ans: "A" },
-                    { id: "w10_q5", q: "Which preparation strategy reduces nervousness before public speaking?", options: ["A) Avoiding rehearsal entirely", "B) Practicing relaxation techniques like progressive muscle relaxation", "C) Comparing negatively with experienced speakers", "D) Pretending the event isn't important"], ans: "B" },
-                    { id: "w10_q6", q: "What strengthens resilience during long-term challenges?", options: ["A) Avoiding effort all together", "B) Giving up after minor setbacks", "C) Seeking approval constantly", "D) Building supportive relationships and coping strategies"], ans: "D" },
-                    { id: "w10_q7", q: "What is a common outcome of unmanaged academic stress?", options: ["A) Sleep enhancement", "B) Improved emotional regulation", "C) Decline in concentration and motivation", "D) Unlimited productivity"], ans: "C" },
-                    { id: "w10_q8", q: "Which lifestyle habit promotes sustainable self-care?", options: ["A) Establishing consistent sleep routines", "B) Skipping meals to save time", "C) Working without rest breaks", "D) Neglecting hydration needs"], ans: "A" },
-                    { id: "w10_q9", q: "How can individuals transform mistakes into growth opportunities?", options: ["A) Blaming others exclusively", "B) Ignoring all past errors", "C) Journaling reflections and setting improvement goals", "D) Rejecting feedback outright"], ans: "C" },
-                    { id: "w10_q10", q: "What is a healthy coping response when stress builds suddenly?", options: ["A) Using mindfulness to regain focus", "B) Reacting impulsively with frustration", "C) Escaping responsibilities immediately", "D) Assigning blame to others"], ans: "A" }
-                ]
-            },
-            {
-                id: "w11",
-                title: "Week - 11",
-                questions: [
-                    { id: "w11_q1", q: "Which of the following best describes academic stress?", options: ["A) Stress caused only by exams", "B) Pressure related to educational demands and expectations", "C) Stress due to physical illness only", "D) Stress unrelated to studies"], ans: "B" },
-                    { id: "w11_q2", q: "What is a common physical symptom of stress?", options: ["A) Improved memory", "B) Muscle tension", "C) Increased relaxation", "D) Better sleep"], ans: "B" },
-                    { id: "w11_q3", q: "Which breathing technique is commonly used in mindfulness practice?", options: ["A) Rapid breathing", "B) Deep diaphragmatic breathing", "C) Irregular breathing", "D) Breath holding"], ans: "B" },
-                    { id: "w11_q4", q: "How does regular physical activity help manage stress?", options: ["A) Increases stress hormones", "B) Reduces mood levels", "C) Improves mood through endorphin release", "D) Causes fatigue only"], ans: "C" },
-                    { id: "w11_q5", q: "Which of the following can improve stress resilience?", options: ["A) Negative thinking", "B) Social support", "C) Isolation", "D) Ignoring problems"], ans: "B" },
-                    { id: "w11_q6", q: "What happens when stress is prolonged?", options: ["A) Improved concentration", "B) Better relaxation", "C) Mental and physical exhaustion", "D) Increased happiness"], ans: "C" },
-                    { id: "w11_q7", q: "Which activity promotes relaxation during exams?", options: ["A) Panic studying", "B) Short breathing exercises", "C) Avoiding breaks", "D) Cramming overnight"], ans: "B" },
-                    { id: "w11_q8", q: "Time management helps reduce stress by:", options: ["A) Increasing confusion", "B) Organizing tasks effectively", "C) Avoiding deadlines", "D) Ignoring priorities"], ans: "B" },
-                    { id: "w11_q9", q: "Which of the following is most helpful for maintaining focus when feeling stressed?", options: ["A) Trying to complete multiple tasks simultaneously", "B) Taking short, planned breaks", "C) Avoiding all difficult tasks", "D) Working continuously without rest"], ans: "B" },
-                    { id: "w11_q10", q: "Why is it important to identify personal stress triggers?", options: ["A) To completely avoid all responsibilities", "B) To understand what contributes to stress and respond more effectively", "C) To increase workload", "D) To ignore stressful situations"], ans: "B" }
-                ]
-            },
-            {
-                id: "w12",
-                title: "Week - 12",
-                questions: [
-                    { id: "w12_q1", q: "Body image refers to:", options: ["A) Physical fitness level", "B) Perception and feelings about one's body", "C) Body weight only", "D) Medical health status"], ans: "B" },
-                    { id: "w12_q2", q: "Upward social comparison leads to:", options: ["A) Increased confidence always", "B) Comparing with less successful people", "C) Comparing with better-looking or more successful people", "D) Ignoring others"], ans: "C" },
-                    { id: "w12_q3", q: "Objectification theory suggests that:", options: ["A) People ignore appearance", "B) Individuals see themselves from an outsider's perspective", "C) Social media has no effect", "D) Only men are affected"], ans: "B" },
-                    { id: "w12_q4", q: "FOMO stands for:", options: ["A) Fear of Missing Out", "B) Fear of Mental Overload", "C) Feeling of Mood Oscillation", "D) Focus on Media Output"], ans: "A" },
-                    { id: "w12_q5", q: "Digital fatigue is:", options: ["A) Physical illness only", "B) Mental exhaustion from excessive screen time", "C) Lack of sleep only", "D) Internet failure"], ans: "B" },
-                    { id: "w12_q6", q: "Which is a key feature of cyberbullying?", options: ["A) Face-to-face interaction", "B) Limited impact", "C) Online harassment", "D) Only adults are affected"], ans: "C" },
-                    { id: "w12_q7", q: "Social media activates which brain chemical?", options: ["A) Serotonin", "B) Dopamine", "C) Melatonin", "D) Insulin"], ans: "B" },
-                    { id: "w12_q8", q: "Curated content means:", options: ["A) Raw, unedited life", "B) Random posts", "C) Selectively edited and idealized posts", "D) Scientific data"], ans: "C" },
-                    { id: "w12_q9", q: "Which of the following can negatively affect a person's self-esteem when using social media?", options: ["A) Comparing oneself with others online", "B) Taking regular breaks from social media", "C) Following positive and supportive content", "D) Limiting screen time"], ans: "A" },
-                    { id: "w12_q10", q: "Which of the following is a healthy approach to social media use?", options: ["A) Checking social media whenever feeling stressed", "B) Comparing your appearance with influencers", "C) Setting boundaries around screen time", "D) Seeking validation through likes and comments"], ans: "C" }
-                ]
-            }
-        ];
+      <div id="bookmarksContainer" class="d-grid gap-3">
+        <!-- Bookmark Cards rendered here -->
+      </div>
+    </div>
 
-        const TOTAL_ALL_QUESTIONS = rawModulesData.reduce((acc, m) => acc + m.questions.length, 0);
+    <!-- View 4: Session Summary & Review -->
+    <div id="summaryView" class="d-none">
+      <div class="card border-0 shadow-sm rounded-4 p-4 text-center mb-4">
+        <div class="mb-3">
+          <div class="display-5 fw-bold text-primary" id="summaryScore">0 / 0</div>
+          <div class="text-muted fw-medium" id="summaryPercent">0% Score</div>
+        </div>
 
-        // State Variables - Separated session progress for every mode
-        let userState = {
-            theme: 'light',
-            userAnswers: {},  // Structure: { 'all': { qId: "A" }, 'w1': { qId: "B" }, ... }
-            bookmarks: [],    // [ "w1_q1", ... ]
-            savedIndexes: {}  // { 'all': 4, 'w1': 2 }
+        <p class="text-muted mb-4">Great job completing this practice session!</p>
+
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+          <button class="btn btn-primary rounded-3" id="summaryReturnHomeBtn">
+            <i class="bi bi-house-door me-1"></i> Return to Dashboard
+          </button>
+          <button class="btn btn-outline-primary rounded-3" id="summaryRetryBtn">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Practice Again
+          </button>
+          <button class="btn btn-outline-success rounded-3" id="summaryAiAnalysisBtn">
+            <i class="bi bi-stars me-1"></i> AI Performance Analysis
+          </button>
+        </div>
+      </div>
+
+      <!-- AI Diagnostics Container -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 ai-box d-none" id="aiAnalysisContainer">
+        <h3 class="h6 fw-bold text-primary mb-3">
+          <i class="bi bi-stars me-1"></i> Gemini AI Performance & Weak Area Analysis
+        </h3>
+        <div class="small leading-relaxed" id="aiAnalysisBody">
+          Generating diagnostic feedback...
+        </div>
+      </div>
+
+      <!-- Session Question Breakdown -->
+      <h3 class="h5 fw-bold mb-3">Session Review</h3>
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <button class="btn btn-sm btn-outline-secondary active review-filter-btn" data-filter="all">All</button>
+        <button class="btn btn-sm btn-outline-success review-filter-btn" data-filter="correct">Correct</button>
+        <button class="btn btn-sm btn-outline-danger review-filter-btn" data-filter="wrong">Incorrect</button>
+        <button class="btn btn-sm btn-outline-warning review-filter-btn" data-filter="bookmarked">Bookmarked</button>
+      </div>
+
+      <div class="d-grid gap-3" id="reviewList">
+        <!-- Questions Review list -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Question Grid Modal -->
+  <div class="modal fade" id="gridModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold">Jump to Question</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex flex-wrap gap-2 justify-content-center" id="modalGridContainer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session Resume / Restart Prompt Modal -->
+  <div class="modal fade" id="resumePromptModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="resumeModalTitle">Resume Practice Session?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body py-3">
+          <p class="text-muted mb-0" id="resumeModalBody">
+            You have existing answers or progress saved for this session. Would you like to resume from where you left off or start fresh from the beginning?
+          </p>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-danger rounded-3" id="restartSessionBtn">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Start Beginning (Reset)
+          </button>
+          <button type="button" class="btn btn-primary rounded-3" id="resumeSessionBtn">
+            <i class="bi bi-play-fill me-1"></i> Resume
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Generator Modal -->
+  <div class="modal fade" id="aiGeneratorModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold"><i class="bi bi-stars text-primary me-2"></i>Generate AI Question</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body py-4">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Topic / Concept</label>
+            <input type="text" class="form-control rounded-3" id="aiTopicInput" placeholder="e.g. Cognitive Dissonance, Stress Resilience, Attachment Styles" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Difficulty Level</label>
+            <select class="form-select rounded-3" id="aiDifficultySelect">
+              <option value="Easy">Easy</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Hard">Hard</option>
+            </select>
+          </div>
+          <div id="aiGenStatus" class="small text-primary d-none mb-3">
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span> Generating custom MCQ via Gemini AI...
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-light rounded-3" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary rounded-3" id="generateQuestionBtn">
+            Generate & Practice
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Dataset containing 12 Weeks / Modules (119 Questions Total)
+    const rawModulesData = [
+      {
+        id: "w1",
+        title: "Week - 1",
+        questions: [
+          { id: "w1_q1", q: "Which factor best contributes to overall mental wellbeing?", options: ["A) Ability to cope with life challenges", "B) Constant happiness", "C) Avoiding all stress", "D) Ignoring emotions"], ans: "A" },
+          { id: "w1_q2", q: "Which of the following is the correct sequence of stages in the General Adaptation Syndrome?", options: ["A) Resistance→Alarm→Exhaustion", "B) Alarm→Exhaustion→Resistance", "C) Alarm→Resistance→Exhaustion", "D) Exhaustion→Alarm→Resistance"], ans: "C" },
+          { id: "w1_q3", q: "Which behaviour reflects healthy coping?", options: ["A) Suppressing feelings", "B) Avoiding problems", "C) Engaging in hobbies", "D) Overthinking situations"], ans: "C" },
+          { id: "w1_q4", q: "What is a key characteristic of digital overload?", options: ["A) Mental exhaustion from excessive information", "B) Improved focus", "C) Reduced device usage", "D) Increased relaxation"], ans: "A" },
+          { id: "w1_q5", q: "Meher compares herself to influencers and feels inferior. Which theory explains this?", options: ["A) Operant conditioning", "B) Cognitive dissonance", "C) Social comparison theory", "D) Behavioral theory"], ans: "C" },
+          { id: "w1_q6", q: "Which of the following is an example of unhealthy social media behavior?", options: ["A) Learning new skills", "B) Connecting with friends", "C) Watching informative content", "D) Comparing oneself constantly with others"], ans: "D" },
+          { id: "w1_q7", q: "What is the main purpose of relaxation techniques?", options: ["A) Increase stress levels", "B) Improve memory only", "C) Reduce physiological and mental tension", "D) Avoid responsibilities"], ans: "C" },
+          { id: "w1_q8", q: "Which practice helps in improving self-awareness?", options: ["A) Mindful observation of thoughts", "B) Ignoring emotions", "C) Multitasking", "D) Social withdrawal"], ans: "A" },
+          { id: "w1_q9", q: "According to Piaget's theory, what is the \"imaginary audience\"?", options: ["A) A group of friends who provide feedback on behavior", "B) The belief that others are constantly watching, noticing, and evaluating oneself", "C) The tendency to imitate people seen in the media", "D) The ability to understand another person's perspective"], ans: "B" }
+        ]
+      },
+      {
+        id: "w2",
+        title: "Week - 2",
+        questions: [
+          { id: "w2_q1", q: "Peer pressure can best be described as:", options: ["A) Self-motivation", "B) Family expectations", "C) Personal decision-making", "D) Influence from peers to act in certain ways"], ans: "D" },
+          { id: "w2_q2", q: "Assertiveness helps individuals to:", options: ["A) Please everyone", "B) Express thoughts respectfully", "C) Avoid communication", "D) Dominate others"], ans: "B" },
+          { id: "w2_q3", q: "Which factor strongly affects body image in adolescents?", options: ["A) Media influence", "B) Weather", "C) Food habits only", "D) Sleep cycle"], ans: "A" },
+          { id: "w2_q4", q: "What is the purpose of mindfulness?", options: ["A) Focus on past mistakes", "B) Worry about future", "C) Stay present in the moment", "D) Avoid emotions"], ans: "C" },
+          { id: "w2_q5", q: "Which is a relaxation technique?", options: ["A) Meditation", "B) Overthinking", "C) Isolation", "D) Procrastination"], ans: "A" },
+          { id: "w2_q6", q: "Emotional regulation refers to:", options: ["A) Suppressing all emotions", "B) Ignoring feelings", "C) Expressing anger freely", "D) Managing emotions effectively"], ans: "D" },
+          { id: "w2_q7", q: "A student's peers encourage her to join a study group and maintain a healthier routine. Although she initially feels hesitant, the decision aligns with her personal goals and helps her develop better habits. Which aspect most strongly indicates positive peer pressure?", options: ["A) She agrees because she does not want to be excluded", "B) She feels nervous before deciding", "C) The influence aligns with her values and contributes to personal growth", "D) She changes behaviour mainly to gain approval"], ans: "C" },
+          { id: "w2_q8", q: "Active listening involves:", options: ["A) Interrupting others", "B) Judging quickly", "C) Paying full attention", "D) Ignoring body language"], ans: "C" },
+          { id: "w2_q9", q: "Building self-esteem means:", options: ["A) Comparing with others", "B) Accepting oneself", "C) Seeking validation only", "D) Avoiding challenges"], ans: "B" },
+          { id: "w2_q10", q: "Why can body image concerns feel more intense during adolescence?", options: ["A) Adolescents experience very few emotional changes", "B) Heightened emotional volatility can amplify concerns about appearance and self-worth", "C) Adolescents do not care about their appearance", "D) Mood swings reduce concerns about self-worth"], ans: "B" }
+        ]
+      },
+      {
+        id: "w3",
+        title: "Week - 3",
+        questions: [
+          { id: "w3_q1", q: "When faced with two assignments due on the same day, the best first step is to:", options: ["A) Ignore both assignments", "B) Complete the easier one without planning", "C) Prioritize tasks based on deadlines and importance", "D) Wait until the last minute to decide"], ans: "C" },
+          { id: "w3_q2", q: "Which is an example of unhealthy coping?", options: ["A) Talking to a friend", "B) Exercise", "C) Journaling", "D) Excessive social media"], ans: "D" },
+          { id: "w3_q3", q: "Which of the following reflects effective emotional regulation?", options: ["A) Ignoring feelings completely", "B) Recognizing emotions and choosing a response", "C) Reacting immediately without thinking", "D) Blaming others for emotional distress"], ans: "B" },
+          { id: "w3_q4", q: "A friend is upset, and you respond by saying, \"It sounds like you're feeling disappointed because your project didn't go as planned.\" This demonstrates:", options: ["A) Criticism", "B) Active listening", "C) Giving unwanted advice", "D) Changing the subject"], ans: "B" },
+          { id: "w3_q5", q: "A student breaks a large assignment into smaller tasks with deadlines. This is an example of:", options: ["A) Goal setting and time management", "B) Avoidance", "C) Emotional suppression", "D) Conflict awareness"], ans: "A" },
+          { id: "w3_q6", q: "Regular physical activity contributes to mental well-being by:", options: ["A) Increasing stress hormones", "B) Reducing endorphin levels", "C) Causing emotional instability", "D) Enhancing mood through neurochemical changes"], ans: "D" },
+          { id: "w3_q7", q: "A person who understands others' feelings during conflict shows:", options: ["A) Sympathy only", "B) Indifference", "C) Aggression", "D) Empathy"], ans: "D" },
+          { id: "w3_q8", q: "A student fails an exam but plans a new study strategy instead of giving up. This best demonstrates:", options: ["A) Avoidance coping", "B) Emotional suppression", "C) Resilience", "D) Denial"], ans: "C" },
+          { id: "w3_q9", q: "A student disagrees with a classmate but speaks calmly, listens carefully, and looks for a solution that benefits both. This is an example of:", options: ["A) Conflict resolution", "B) Aggressive communication", "C) Emotional avoidance", "D) Passive behaviour"], ans: "A" },
+          { id: "w3_q10", q: "Which is NOT a component of SMART goals?", options: ["A) Specific", "B) Measurable", "C) Arbitrary", "D) Time-bound"], ans: "C" }
+        ]
+      },
+      {
+        id: "w4",
+        title: "Week - 4",
+        questions: [
+          { id: "w4_q1", q: "Which of the following is NOT a source of academic pressure?", options: ["A) High expectations from parents", "B) Time constraints", "C) Balanced lifestyle", "D) Fear of failure"], ans: "C" },
+          { id: "w4_q2", q: "Difficulty in concentration and negative thinking are examples of:", options: ["A) Behavioural symptoms", "B) Emotional symptoms", "C) Physical symptoms", "D) Cognitive symptoms"], ans: "D" },
+          { id: "w4_q3", q: "Emotional intelligence refers to the ability to:", options: ["A) Solve mathematical problems", "B) Understand and manage emotions", "C) Manage time effectively", "D) Memorize information"], ans: "B" },
+          { id: "w4_q4", q: "Career Decision Scale (CDS) is used to measure:", options: ["A) Intelligence", "B) Career indecision", "C) Emotional intelligence", "D) Personality traits"], ans: "B" },
+          { id: "w4_q5", q: "Which of the following is an ethical responsibility of a therapist?", options: ["A) Making all decisions on behalf of the client", "B) Guaranteeing that therapy will always be successful", "C) Maintaining confidentiality and obtaining informed consent", "D) Sharing client information with friends for advice"], ans: "C" },
+          { id: "w4_q6", q: "Which activity is most helpful for relaxing the mind?", options: ["A) Continuous worrying", "B) Meditation", "C) Skipping meals", "D) Excessive screen time"], ans: "B" },
+          { id: "w4_q7", q: "A person should seek help when:", options: ["A) Everything is going well", "B) Problems disturb daily routine", "C) Only during holidays", "D) Never"], ans: "B" },
+          { id: "w4_q8", q: "Which habit improves time management?", options: ["A) Planning tasks", "B) Ignoring deadlines", "C) Studying randomly", "D) Sleeping less"], ans: "A" },
+          { id: "w4_q9", q: "Social responsibility includes:", options: ["A) Helping others", "B) Ignoring society", "C) Competing always", "D) Focusing only on self"], ans: "A" },
+          { id: "w4_q10", q: "What is the primary distinction between counselling and psychotherapy?", options: ["A) Counselling focuses only on mental illness, while psychotherapy focuses on education", "B) Counselling is generally shorter-term and addresses specific or everyday concerns, while psychotherapy may be longer-term and addresses deeper mental health concerns", "C) Counselling is provided only by psychiatrists, while psychotherapy is provided only by counsellors", "D) There is no difference between counselling and psychotherapy"], ans: "B" }
+        ]
+      },
+      {
+        id: "w5",
+        title: "Week - 5",
+        questions: [
+          { id: "w5_q1", q: "What is emotional validation?", options: ["A) Ignoring emotions to stay strong", "B) Accepting and acknowledging one's own or others' emotions", "C) Controlling emotions completely", "D) Avoiding emotional discussions"], ans: "B" },
+          { id: "w5_q2", q: "What is the main purpose of emotional ventilation?", options: ["A) Suppressing emotions", "B) Expressing emotions in a healthy way", "C) Avoiding emotional experiences", "D) Criticising others' feelings"], ans: "B" },
+          { id: "w5_q3", q: "Which skill is essential for emotional validation?", options: ["A) Judgment", "B) Active listening", "C) Avoidance", "D) Silence"], ans: "B" },
+          { id: "w5_q4", q: "Emotional suppression can lead to:", options: ["A) Increased well-being", "B) Better communication", "C) Mental health issues", "D) Emotional clarity"], ans: "C" },
+          { id: "w5_q5", q: "Which of the following is a type of boundary?", options: ["A) Financial boundary", "B) Emotional boundary", "C) Academic boundary", "D) Political boundary"], ans: "B" },
+          { id: "w5_q6", q: "What is assertiveness in boundary setting?", options: ["A) Being aggressive", "B) Being passive", "C) Expressing needs clearly and respectfully", "D) Avoiding confrontation"], ans: "C" },
+          { id: "w5_q7", q: "What helps in managing emotional overwhelm?", options: ["A) Ignoring stress", "B) Mindfulness and grounding", "C) Overworking", "D) Isolation"], ans: "B" },
+          { id: "w5_q8", q: "Emotional triggers are:", options: ["A) Random thoughts", "B) Situations that provoke emotional reactions", "C) Physical symptoms only", "D) Irrelevant experiences"], ans: "B" },
+          { id: "w5_q9", q: "Emotional resilience refers to:", options: ["A) Avoiding emotions", "B) Reacting impulsively", "C) Ability to adapt and recover from stress", "D) Ignoring problems"], ans: "C" },
+          { id: "w5_q10", q: "Social support contributes to:", options: ["A) Increased stress", "B) Emotional resilience", "C) Isolation", "D) Conflict"], ans: "B" }
+        ]
+      },
+      {
+        id: "w6",
+        title: "Week - 6",
+        questions: [
+          { id: "w6_q1", q: "Journaling helps in:", options: ["A) Stress increase", "B) Confusion", "C) Emotional clarity", "D) Avoidance"], ans: "C" },
+          { id: "w6_q2", q: "Gratitude journaling improves:", options: ["A) Stress levels", "B) Negative thinking", "C) Fear", "D) Positive mindset"], ans: "D" },
+          { id: "w6_q3", q: "Movement therapies include:", options: ["A) Dancing and yoga", "B) Sleeping", "C) Watching TV", "D) Studying"], ans: "A" },
+          { id: "w6_q4", q: "Storytelling helps in:", options: ["A) Increasing anxiety", "B) Ignoring problems", "C) Self-exploration", "D) Avoiding emotions"], ans: "C" },
+          { id: "w6_q5", q: "Which is a mindfulness technique?", options: ["A) Overthinking", "B) Avoiding study", "C) Panic", "D) Deep breathing"], ans: "D" },
+          { id: "w6_q6", q: "Exam anxiety can affect:", options: ["A) Only physical health", "B) Only mental health", "C) Both mental and physical health", "D) Neither"], ans: "C" },
+          { id: "w6_q7", q: "A study schedule helps in:", options: ["A) Increasing stress", "B) Avoiding exams", "C) Managing time effectively", "D) Confusion"], ans: "C" },
+          { id: "w6_q8", q: "Positive self-talk helps to:", options: ["A) Build confidence", "B) Increase fear", "C) Reduce memory", "D) Create stress"], ans: "A" },
+          { id: "w6_q9", q: "How do creative arts and therapies support emotional well-being?", options: ["A) By allowing non-verbal communication and reducing stress", "B) By suppressing emotions and causing confusion", "C) By increasing fear and anxiety", "D) By avoiding feelings and memory loss"], ans: "A" },
+          { id: "w6_q10", q: "What strategies help in managing exam anxiety effectively?", options: ["A) Stress related to exams managed through time planning", "B) Skipping sleep and avoiding study", "C) Happiness before exams and procrastination", "D) Physical strength and ignoring preparation"], ans: "A" }
+        ]
+      },
+      {
+        id: "w7",
+        title: "Week - 7",
+        questions: [
+          { id: "w7_q1", q: "Relationship trauma may result from:", options: ["A) Trust", "B) Respect", "C) Support", "D) Betrayal or abuse"], ans: "D" },
+          { id: "w7_q2", q: "Avoidant individuals in relationships tend to:", options: ["A) Seek reassurance", "B) Be overly expressive", "C) Maintain emotional distance", "D) Become dependent"], ans: "C" },
+          { id: "w7_q3", q: "Which of the following is most important for maintaining a healthy work-life balance?", options: ["A) Ignoring stress", "B) Time management", "C) Overworking", "D) Avoiding responsibility"], ans: "B" },
+          { id: "w7_q4", q: "Setting healthy personal boundaries primarily helps in:", options: ["A) Increasing stress", "B) Avoiding tasks", "C) Reducing clarity", "D) Preventing burnout"], ans: "D" },
+          { id: "w7_q5", q: "Healthy friendships are best characterized by:", options: ["A) Competition", "B) Control", "C) Mutual respect", "D) Superiority"], ans: "C" },
+          { id: "w7_q6", q: "Communication in a secure attachment relationship is generally:", options: ["A) Aggressive", "B) Passive", "C) Avoidant", "D) Open and honest"], ans: "D" },
+          { id: "w7_q7", q: "Conflict resolution in secure relationships typically involves:", options: ["A) Blaming the other person", "B) Remaining silent", "C) Avoiding the issue", "D) Mutual understanding and problem-solving"], ans: "D" },
+          { id: "w7_q8", q: "Developing a secure attachment style requires:", options: ["A) Avoiding emotional closeness", "B) Emotional awareness and healthy expression", "C) Ignoring personal needs", "D) Fear of rejection"], ans: "B" },
+          { id: "w7_q9", q: "According to attachment theory, which parenting pattern is most likely to contribute to the development of an anxious attachment style in children?", options: ["A) Consistent warmth with predictable responsiveness", "B) Emotionally distant and consistently rejecting caregiving", "C) Inconsistent caregiving with unpredictable responsiveness to the child's needs", "D) Encouraging age-appropriate independence while remaining emotionally available"], ans: "C" },
+          { id: "w7_q10", q: "A person with a history of relationship trauma has worked through therapy and developed a secure attachment style. Which behaviour best reflects this change?", options: ["A) Avoiding intimate relationships to prevent emotional pain", "B) Depending entirely on a partner for emotional security and decision-making", "C) Communicating needs openly, maintaining healthy boundaries, and tolerating emotional vulnerability without excessive fear", "D) Suppressing emotions and focusing exclusively on work to avoid interpersonal closeness"], ans: "C" }
+        ]
+      },
+      {
+        id: "w8",
+        title: "Week - 8",
+        questions: [
+          { id: "w8_q1", q: "What is the key difference between intrinsic and extrinsic motivation?", options: ["A) Intrinsic motivation is driven by external rewards", "B) Intrinsic motivation arises from internal satisfaction, while extrinsic comes from external rewards", "C) Extrinsic motivation is self-generated", "D) Both types involve competition"], ans: "B" },
+          { id: "w8_q2", q: "During a mental health emergency, what should a professional focus on first?", options: ["A) Gathering paperwork", "B) Making assumptions", "C) Ensuring safety and stabilizing the individual", "D) Discussing past history"], ans: "C" },
+          { id: "w8_q3", q: "How does positive reinforcement influence motivation?", options: ["A) It increases the likelihood of repeating desired behaviours by rewarding them", "B) It provides punishment for poor performance", "C) It discourages repetition of behaviours", "D) It delays goal achievement"], ans: "A" },
+          { id: "w8_q4", q: "Why is aligning goals with personal values important for motivation?", options: ["A) It helps reduce emotional attachment", "B) It decreases goal clarity", "C) It strengthens commitment and engagement", "D) It prevents decision-making"], ans: "C" },
+          { id: "w8_q5", q: "Which skill is essential in Psychological First Aid?", options: ["A) Debating the cause of the crisis", "B) Active listening and empathic presence", "C) Avoiding eye contact", "D) Giving unsolicited advice"], ans: "B" },
+          { id: "w8_q6", q: "Which of the following is a warning sign of suicidal ideation in students?", options: ["A) Improved academic performance", "B) Talking about feeling hopeless or being a burden", "C) Expressing excitement about future plans", "D) Increased interest in group activities"], ans: "B" },
+          { id: "w8_q7", q: "What is a key strategy for approaching someone who may be thinking about suicide?", options: ["A) Avoid asking direct questions", "B) Use vague suggestions", "C) Ignore signs unless they ask for help", "D) Speak openly, with compassion and without judgment"], ans: "D" },
+          { id: "w8_q8", q: "What defines resilience in the context of mental health?", options: ["A) Avoiding emotional expression", "B) The ability to adapt and recover from adversity", "C) Suppressing difficult experiences", "D) Always feeling happy regardless of circumstances"], ans: "B" },
+          { id: "w8_q9", q: "Which strategy helps cultivate resilience during a crisis?", options: ["A) Ignoring emotions and focusing only on tasks", "B) Denying the impact of stress", "C) Practicing optimism and emotional awareness", "D) Isolating oneself to prevent burdening others"], ans: "C" },
+          { id: "w8_q10", q: "What is an effective way to prevent burnout?", options: ["A) Setting boundaries and prioritizing self-care", "B) Ignoring personal needs", "C) Taking on more responsibilities", "D) Avoiding breaks to maintain productivity"], ans: "A" }
+        ]
+      },
+      {
+        id: "w9",
+        title: "Week - 9",
+        questions: [
+          { id: "w9_q1", q: "What is one way to prepare well for a meeting with a supervisor?", options: ["A) Arrive with no agenda or notes", "B) Send your supervisor a brief agenda in advance", "C) Wait for the supervisor to ask all questions", "D) Only discuss problems you can solve yourself"], ans: "B" },
+          { id: "w9_q2", q: "Which practice supports trust in a mentor-student relationship?", options: ["A) Sharing only partial information to avoid criticism", "B) Asking for extensions right before every deadline", "C) Promising effort without updating on progress", "D) Meeting deadlines and being honest about delays"], ans: "D" },
+          { id: "w9_q3", q: "Why is it important to ask clarifying questions of a supervisor?", options: ["A) To make the meeting last longer", "B) To confirm that you understand the task correctly", "C) To show that you disagree with their instructions", "D) To avoid asking for feedback later"], ans: "B" },
+          { id: "w9_q4", q: "Which of the following best describes a respectful mentor-student dynamic?", options: ["A) Both parties respect time, boundaries, and communication norms", "B) The student avoids all emails and only speaks in class", "C) The student ignores feedback but praises the mentor", "D) The mentor makes all decisions without student input"], ans: "A" },
+          { id: "w9_q5", q: "What is most likely to weaken a supervisory relationship?", options: ["A) Regular progress updates and openness about challenges", "B) Being honest about not understanding part of the task", "C) Repeatedly missing deadlines without explanation", "D) Asking for help whenever you feel stuck"], ans: "C" },
+          { id: "w9_q6", q: "Which message style is most appropriate for official communication with a supervisor?", options: ["A) Very casual, with emojis and slang", "B) Written only in voice-note form", "C) Extremely long and detailed for every small issue", "D) Polite, clear, and professional in tone"], ans: "D" },
+          { id: "w9_q7", q: "What is a sign of a healthy academic relationship with a mentor?", options: ["A) The student hides struggles to appear perfect", "B) Both parties respect each other's time and boundaries", "C) The mentor never checks on progress", "D) The student rarely asks questions"], ans: "B" },
+          { id: "w9_q8", q: "Which of the following is helpful when you feel confused about your supervisor's instructions?", options: ["A) Ask for examples or clarification politely", "B) Stay silent and hope you figure it out later", "C) Immediately switch to a different mentor", "D) Ignore the instructions and work in your own way"], ans: "A" },
+          { id: "w9_q9", q: "Why is it important to be honest about your workload with a supervisor?", options: ["A) It guarantees you will get easier tasks", "B) It helps them suggest realistic timelines and priorities", "C) It shifts full responsibility for planning onto you", "D) It proves that you are overqualified"], ans: "B" },
+          { id: "w9_q10", q: "Which behavior shows respect for a mentor's expertise?", options: ["A) Repeatedly arguing without evidence", "B) Ignoring their suggestions and doing your own thing", "C) Listening carefully and considering their advice", "D) Publicly criticizing them in front of peers"], ans: "C" }
+        ]
+      },
+      {
+        id: "w10",
+        title: "Week - 10",
+        questions: [
+          { id: "w10_q1", q: "Which behaviour demonstrates emotional intelligence in conflict resolution?", options: ["A) Listening actively and validating feelings", "B) Ignoring the other person's perspective", "C) Responding with aggression immediately", "D) Avoiding all communication"], ans: "A" },
+          { id: "w10_q2", q: "When recovering from illness, which choice reflects balanced self-care?", options: ["A) Ignoring medical advice", "B) Refusing to adjust routines at all", "C) Gradually resuming responsibilities with rest breaks", "D) Overexerting to \"catch up\" quickly"], ans: "C" },
+          { id: "w10_q3", q: "Which element most influences identity exploration in adolescence?", options: ["A) Physical appearance alone", "B) Daily temperature changes", "C) Random coincidences only", "D) Experimenting with different roles and values"], ans: "D" },
+          { id: "w10_q4", q: "What improves the quality of group decision-making?", options: ["A) Considering diverse viewpoints before deciding", "B) Acting on impulse without discussion", "C) Copying the loudest voice in the room", "D) Avoiding responsibility for choices"], ans: "A" },
+          { id: "w10_q5", q: "Which preparation strategy reduces nervousness before public speaking?", options: ["A) Avoiding rehearsal entirely", "B) Practicing relaxation techniques like progressive muscle relaxation", "C) Comparing negatively with experienced speakers", "D) Pretending the event isn't important"], ans: "B" },
+          { id: "w10_q6", q: "What strengthens resilience during long-term challenges?", options: ["A) Avoiding effort all together", "B) Giving up after minor setbacks", "C) Seeking approval constantly", "D) Building supportive relationships and coping strategies"], ans: "D" },
+          { id: "w10_q7", q: "What is a common outcome of unmanaged academic stress?", options: ["A) Sleep enhancement", "B) Improved emotional regulation", "C) Decline in concentration and motivation", "D) Unlimited productivity"], ans: "C" },
+          { id: "w10_q8", q: "Which lifestyle habit promotes sustainable self-care?", options: ["A) Establishing consistent sleep routines", "B) Skipping meals to save time", "C) Working without rest breaks", "D) Neglecting hydration needs"], ans: "A" },
+          { id: "w10_q9", q: "How can individuals transform mistakes into growth opportunities?", options: ["A) Blaming others exclusively", "B) Ignoring all past errors", "C) Journaling reflections and setting improvement goals", "D) Rejecting feedback outright"], ans: "C" },
+          { id: "w10_q10", q: "What is a healthy coping response when stress builds suddenly?", options: ["A) Using mindfulness to regain focus", "B) Reacting impulsively with frustration", "C) Escaping responsibilities immediately", "D) Assigning blame to others"], ans: "A" }
+        ]
+      },
+      {
+        id: "w11",
+        title: "Week - 11",
+        questions: [
+          { id: "w11_q1", q: "Which of the following best describes academic stress?", options: ["A) Stress caused only by exams", "B) Pressure related to educational demands and expectations", "C) Stress due to physical illness only", "D) Stress unrelated to studies"], ans: "B" },
+          { id: "w11_q2", q: "What is a common physical symptom of stress?", options: ["A) Improved memory", "B) Muscle tension", "C) Increased relaxation", "D) Better sleep"], ans: "B" },
+          { id: "w11_q3", q: "Which breathing technique is commonly used in mindfulness practice?", options: ["A) Rapid breathing", "B) Deep diaphragmatic breathing", "C) Irregular breathing", "D) Breath holding"], ans: "B" },
+          { id: "w11_q4", q: "How does regular physical activity help manage stress?", options: ["A) Increases stress hormones", "B) Reduces mood levels", "C) Improves mood through endorphin release", "D) Causes fatigue only"], ans: "C" },
+          { id: "w11_q5", q: "Which of the following can improve stress resilience?", options: ["A) Negative thinking", "B) Social support", "C) Isolation", "D) Ignoring problems"], ans: "B" },
+          { id: "w11_q6", q: "What happens when stress is prolonged?", options: ["A) Improved concentration", "B) Better relaxation", "C) Mental and physical exhaustion", "D) Increased happiness"], ans: "C" },
+          { id: "w11_q7", q: "Which activity promotes relaxation during exams?", options: ["A) Panic studying", "B) Short breathing exercises", "C) Avoiding breaks", "D) Cramming overnight"], ans: "B" },
+          { id: "w11_q8", q: "Time management helps reduce stress by:", options: ["A) Increasing confusion", "B) Organizing tasks effectively", "C) Avoiding deadlines", "D) Ignoring priorities"], ans: "B" },
+          { id: "w11_q9", q: "Which of the following is most helpful for maintaining focus when feeling stressed?", options: ["A) Trying to complete multiple tasks simultaneously", "B) Taking short, planned breaks", "C) Avoiding all difficult tasks", "D) Working continuously without rest"], ans: "B" },
+          { id: "w11_q10", q: "Why is it important to identify personal stress triggers?", options: ["A) To completely avoid all responsibilities", "B) To understand what contributes to stress and respond more effectively", "C) To increase workload", "D) To ignore stressful situations"], ans: "B" }
+        ]
+      },
+      {
+        id: "w12",
+        title: "Week - 12",
+        questions: [
+          { id: "w12_q1", q: "Body image refers to:", options: ["A) Physical fitness level", "B) Perception and feelings about one's body", "C) Body weight only", "D) Medical health status"], ans: "B" },
+          { id: "w12_q2", q: "Upward social comparison leads to:", options: ["A) Increased confidence always", "B) Comparing with less successful people", "C) Comparing with better-looking or more successful people", "D) Ignoring others"], ans: "C" },
+          { id: "w12_q3", q: "Objectification theory suggests that:", options: ["A) People ignore appearance", "B) Individuals see themselves from an outsider's perspective", "C) Social media has no effect", "D) Only men are affected"], ans: "B" },
+          { id: "w12_q4", q: "FOMO stands for:", options: ["A) Fear of Missing Out", "B) Fear of Mental Overload", "C) Feeling of Mood Oscillation", "D) Focus on Media Output"], ans: "A" },
+          { id: "w12_q5", q: "Digital fatigue is:", options: ["A) Physical illness only", "B) Mental exhaustion from excessive screen time", "C) Lack of sleep only", "D) Internet failure"], ans: "B" },
+          { id: "w12_q6", q: "Which is a key feature of cyberbullying?", options: ["A) Face-to-face interaction", "B) Limited impact", "C) Online harassment", "D) Only adults are affected"], ans: "C" },
+          { id: "w12_q7", q: "Social media activates which brain chemical?", options: ["A) Serotonin", "B) Dopamine", "C) Melatonin", "D) Insulin"], ans: "B" },
+          { id: "w12_q8", q: "Curated content means:", options: ["A) Raw, unedited life", "B) Random posts", "C) Selectively edited and idealized posts", "D) Scientific data"], ans: "C" },
+          { id: "w12_q9", q: "Which of the following can negatively affect a person's self-esteem when using social media?", options: ["A) Comparing oneself with others online", "B) Taking regular breaks from social media", "C) Following positive and supportive content", "D) Limiting screen time"], ans: "A" },
+          { id: "w12_q10", q: "Which of the following is a healthy approach to social media use?", options: ["A) Checking social media whenever feeling stressed", "B) Comparing your appearance with influencers", "C) Setting boundaries around screen time", "D) Seeking validation through likes and comments"], ans: "C" }
+        ]
+      }
+    ];
+
+    const TOTAL_ALL_QUESTIONS = rawModulesData.reduce((acc, m) => acc + m.questions.length, 0);
+
+    // State Variables - Separated session progress for every mode
+    let userState = {
+      theme: 'light',
+      userAnswers: {},  // Structure: { 'all': { qId: "A" }, 'w1': { qId: "B" }, ... }
+      bookmarks: [],    // [ "w1_q1", ... ]
+      savedIndexes: {}  // { 'all': 4, 'w1': 2 }
+    };
+
+    let currentSession = {
+      mode: 'all', // 'all', 'module', or 'ai'
+      moduleId: null,
+      questions: [],
+      currentIndex: 0
+    };
+
+    let pendingSessionTarget = null; // Used for resume prompt modal
+
+    // Storage Management
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('mcq_portal_clean_state_v2');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          userState = {
+            theme: parsed.theme || 'light',
+            userAnswers: parsed.userAnswers || {},
+            bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks : [],
+            savedIndexes: parsed.savedIndexes || {}
+          };
+        }
+      } catch (e) {
+        console.warn("Could not load LocalStorage state.");
+      }
+      applyTheme(userState.theme);
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem('mcq_portal_clean_state_v2', JSON.stringify(userState));
+      } catch (e) {
+        console.warn("Could not save to LocalStorage.");
+      }
+      updateGlobalStats();
+    }
+
+    // Helper to access session-specific answers safely
+    function getScopeAnswers(scopeKey) {
+      if (!userState.userAnswers[scopeKey]) {
+        userState.userAnswers[scopeKey] = {};
+      }
+      return userState.userAnswers[scopeKey];
+    }
+
+    // Gemini API Helper Call
+    async function callGeminiApi(promptText, isJson = false, jsonSchema = null) {
+      const apiKey = "";
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+      const payload = {
+        contents: [{ parts: [{ text: promptText }] }]
+      };
+
+      if (isJson && jsonSchema) {
+        payload.generationConfig = {
+          responseMimeType: "application/json",
+          responseSchema: jsonSchema
         };
+      }
 
-        let currentSession = {
-            mode: 'all', // 'all', 'module', or 'ai'
-            moduleId: null,
-            questions: [],
-            currentIndex: 0
-        };
+      let retries = 3;
+      let delay = 1000;
 
-        let pendingSessionTarget = null; // Used for resume prompt modal
+      for (let i = 0; i < retries; i++) {
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
 
-        // Storage Management
-        function loadState() {
-            try {
-                const saved = localStorage.getItem('mcq_portal_clean_state_v2');
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    userState = {
-                        theme: parsed.theme || 'light',
-                        userAnswers: parsed.userAnswers || {},
-                        bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks : [],
-                        savedIndexes: parsed.savedIndexes || {}
-                    };
-                }
-            } catch (e) {
-                console.warn("Could not load LocalStorage state.");
-            }
-            applyTheme(userState.theme);
+          if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
+
+          const result = await response.json();
+          return result?.candidates?.[0]?.content?.parts?.[0]?.text;
+        } catch (err) {
+          if (i === retries - 1) throw err;
+          await new Promise(res => setTimeout(res, delay));
+          delay *= 2;
         }
+      }
+    }
 
-        function saveState() {
-            try {
-                localStorage.setItem('mcq_portal_clean_state_v2', JSON.stringify(userState));
-            } catch (e) {
-                console.warn("Could not save to LocalStorage.");
-            }
-            updateGlobalStats();
-        }
+    // AI Features Logic
+    async function explainCurrentQuestionWithAI() {
+      const q = currentSession.questions[currentSession.currentIndex];
+      if (!q) return;
 
-        // Helper to access session-specific answers safely
-        function getScopeAnswers(scopeKey) {
-            if (!userState.userAnswers[scopeKey]) {
-                userState.userAnswers[scopeKey] = {};
-            }
-            return userState.userAnswers[scopeKey];
-        }
+      const explainBox = document.getElementById('aiExplanationBox');
+      explainBox.classList.remove('d-none');
+      explainBox.innerHTML = '<div class="d-flex align-items-center gap-2 small text-primary"><div class="spinner-border spinner-border-sm" role="status"></div><span>Generating AI Concept Explanation...</span></div>';
 
-        // Gemini API Helper Call
-        async function callGeminiApi(promptText, isJson = false, jsonSchema = null) {
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-
-            const payload = {
-                contents: [{ parts: [{ text: promptText }] }]
-            };
-
-            if (isJson && jsonSchema) {
-                payload.generationConfig = {
-                    responseMimeType: "application/json",
-                    responseSchema: jsonSchema
-                };
-            }
-
-            let retries = 3;
-            let delay = 1000;
-
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
-
-                    const result = await response.json();
-                    return result?.candidates?.[0]?.content?.parts?.[0]?.text;
-                } catch (err) {
-                    if (i === retries - 1) throw err;
-                    await new Promise(res => setTimeout(res, delay));
-                    delay *= 2;
-                }
-            }
-        }
-
-        // AI Features Logic
-        async function explainCurrentQuestionWithAI() {
-            const q = currentSession.questions[currentSession.currentIndex];
-            if (!q) return;
-
-            const explainBox = document.getElementById('aiExplanationBox');
-            explainBox.classList.remove('d-none');
-            explainBox.innerHTML = '<div class="d-flex align-items-center gap-2 small text-primary"><div class="spinner-border spinner-border-sm" role="status"></div><span>Generating AI Concept Explanation...</span></div>';
-
-            const prompt = `Act as an expert psychology instructor. Explain the following question in 2-3 concise bullet points. Focus on why Option ${q.ans} is correct.
+      const prompt = `Act as an expert psychology instructor. Explain the following question in 2-3 concise bullet points. Focus on why Option ${q.ans} is correct.
 
 Question: ${q.q}
 Options:
 ${q.options.join('\n')}
 Correct Answer: Option ${q.ans}`;
 
-            try {
-                const text = await callGeminiApi(prompt);
-                explainBox.innerHTML = `
+      try {
+        const text = await callGeminiApi(prompt);
+        explainBox.innerHTML = `
           <div class="fw-bold mb-2 text-primary small"><i class="bi bi-stars me-1"></i> AI Concept Explanation</div>
           <div class="small">${text ? text.replace(/\n/g, '<br>') : 'Unable to generate explanation.'}</div>
         `;
-            } catch (err) {
-                explainBox.innerHTML = `<span class="text-danger small"><i class="bi bi-exclamation-triangle-fill me-1"></i> Failed to generate AI explanation.</span>`;
-            }
-        }
+      } catch (err) {
+        explainBox.innerHTML = `<span class="text-danger small"><i class="bi bi-exclamation-triangle-fill me-1"></i> Failed to generate AI explanation.</span>`;
+      }
+    }
 
-        async function explainSpecificQuestionWithAI(qId, containerId) {
-            const allQMap = getAllQuestionsMap();
-            const q = allQMap[qId];
-            if (!q) return;
+    async function explainSpecificQuestionWithAI(qId, containerId) {
+      const allQMap = getAllQuestionsMap();
+      const q = allQMap[qId];
+      if (!q) return;
 
-            const container = document.getElementById(containerId);
-            if (!container) return;
+      const container = document.getElementById(containerId);
+      if (!container) return;
 
-            container.classList.remove('d-none');
-            container.innerHTML = '<div class="d-flex align-items-center gap-2 small text-primary"><div class="spinner-border spinner-border-sm" role="status"></div><span>Generating AI Concept Explanation...</span></div>';
+      container.classList.remove('d-none');
+      container.innerHTML = '<div class="d-flex align-items-center gap-2 small text-primary"><div class="spinner-border spinner-border-sm" role="status"></div><span>Generating AI Concept Explanation...</span></div>';
 
-            const prompt = `Act as an expert psychology instructor. Explain the following question in 2-3 concise bullet points. Focus on why Option ${q.ans} is correct.
+      const prompt = `Act as an expert psychology instructor. Explain the following question in 2-3 concise bullet points. Focus on why Option ${q.ans} is correct.
 
 Question: ${q.q}
 Options:
 ${q.options.join('\n')}
 Correct Answer: Option ${q.ans}`;
 
-            try {
-                const text = await callGeminiApi(prompt);
-                container.innerHTML = `
+      try {
+        const text = await callGeminiApi(prompt);
+        container.innerHTML = `
           <div class="fw-bold mb-1 text-primary small"><i class="bi bi-stars me-1"></i> AI Concept Explanation</div>
           <div class="small">${text ? text.replace(/\n/g, '<br>') : 'Unable to generate explanation.'}</div>
         `;
-            } catch (err) {
-                container.innerHTML = `<span class="text-danger small"><i class="bi bi-exclamation-triangle-fill me-1"></i> Failed to generate AI explanation.</span>`;
-            }
+      } catch (err) {
+        container.innerHTML = `<span class="text-danger small"><i class="bi bi-exclamation-triangle-fill me-1"></i> Failed to generate AI explanation.</span>`;
+      }
+    }
+
+    async function analyzePerformanceWithAI() {
+      const container = document.getElementById('aiAnalysisContainer');
+      const body = document.getElementById('aiAnalysisBody');
+
+      container.classList.remove('d-none');
+      body.innerHTML = '<div class="d-flex align-items-center gap-2"><div class="spinner-border spinner-border-sm text-primary" role="status"></div><span>Analyzing missed questions with Gemini AI...</span></div>';
+
+      const scopeKey = currentSession.mode === 'all' ? 'all' : (currentSession.moduleId || 'ai');
+      const answers = getScopeAnswers(scopeKey);
+
+      const missed = [];
+      currentSession.questions.forEach(q => {
+        const userAns = answers[q.id];
+        if (userAns && userAns !== q.ans) {
+          missed.push({ question: q.q, selected: userAns, correct: q.ans });
         }
+      });
 
-        async function analyzePerformanceWithAI() {
-            const container = document.getElementById('aiAnalysisContainer');
-            const body = document.getElementById('aiAnalysisBody');
+      if (missed.length === 0) {
+        body.innerHTML = '<div class="alert alert-success m-0"><i class="bi bi-check-circle-fill me-2"></i>Outstanding performance! You answered all questions in this session correctly.</div>';
+        return;
+      }
 
-            container.classList.remove('d-none');
-            body.innerHTML = '<div class="d-flex align-items-center gap-2"><div class="spinner-border spinner-border-sm text-primary" role="status"></div><span>Analyzing missed questions with Gemini AI...</span></div>';
-
-            const scopeKey = currentSession.mode === 'all' ? 'all' : (currentSession.moduleId || 'ai');
-            const answers = getScopeAnswers(scopeKey);
-
-            const missed = [];
-            currentSession.questions.forEach(q => {
-                const userAns = answers[q.id];
-                if (userAns && userAns !== q.ans) {
-                    missed.push({ question: q.q, selected: userAns, correct: q.ans });
-                }
-            });
-
-            if (missed.length === 0) {
-                body.innerHTML = '<div class="alert alert-success m-0"><i class="bi bi-check-circle-fill me-2"></i>Outstanding performance! You answered all questions in this session correctly.</div>';
-                return;
-            }
-
-            const prompt = `Act as an academic mentor in Mental Health & Wellbeing. Analyze these missed student questions and generate a concise diagnostic summary (under 200 words) with key concepts to review.
+      const prompt = `Act as an academic mentor in Mental Health & Wellbeing. Analyze these missed student questions and generate a concise diagnostic summary (under 200 words) with key concepts to review.
 
 Missed Questions:
 ${JSON.stringify(missed, null, 2)}`;
 
-            try {
-                const analysisText = await callGeminiApi(prompt);
-                body.innerHTML = analysisText ? analysisText.replace(/\n/g, '<br>') : 'Could not generate performance review.';
-            } catch (err) {
-                body.innerHTML = '<span class="text-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i> Error analyzing performance.</span>';
-            }
-        }
+      try {
+        const analysisText = await callGeminiApi(prompt);
+        body.innerHTML = analysisText ? analysisText.replace(/\n/g, '<br>') : 'Could not generate performance review.';
+      } catch (err) {
+        body.innerHTML = '<span class="text-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i> Error analyzing performance.</span>';
+      }
+    }
 
-        async function generateAIQuestion() {
-            const topicInput = document.getElementById('aiTopicInput').value.trim();
-            const difficulty = document.getElementById('aiDifficultySelect').value;
-            const status = document.getElementById('aiGenStatus');
-            const btn = document.getElementById('generateQuestionBtn');
+    async function generateAIQuestion() {
+      const topicInput = document.getElementById('aiTopicInput').value.trim();
+      const difficulty = document.getElementById('aiDifficultySelect').value;
+      const status = document.getElementById('aiGenStatus');
+      const btn = document.getElementById('generateQuestionBtn');
 
-            if (!topicInput) {
-                alert("Please enter a topic or concept.");
-                return;
-            }
+      if (!topicInput) {
+        alert("Please enter a topic or concept.");
+        return;
+      }
 
-            status.classList.remove('d-none');
-            btn.disabled = true;
+      status.classList.remove('d-none');
+      btn.disabled = true;
 
-            const prompt = `Create 1 multiple-choice question on: "${topicInput}" with difficulty level "${difficulty}" for Mental Health & Wellbeing studies. Return JSON.`;
+      const prompt = `Create 1 multiple-choice question on: "${topicInput}" with difficulty level "${difficulty}" for Mental Health & Wellbeing studies. Return JSON.`;
 
-            const schema = {
-                type: "OBJECT",
-                properties: {
-                    q: { type: "STRING" },
-                    options: { type: "ARRAY", items: { type: "STRING" } },
-                    ans: { type: "STRING" }
-                },
-                propertyOrdering: ["q", "options", "ans"]
-            };
+      const schema = {
+        type: "OBJECT",
+        properties: {
+          q: { type: "STRING" },
+          options: { type: "ARRAY", items: { type: "STRING" } },
+          ans: { type: "STRING" }
+        },
+        propertyOrdering: ["q", "options", "ans"]
+      };
 
-            try {
-                const jsonStr = await callGeminiApi(prompt, true, schema);
-                const parsedQ = JSON.parse(jsonStr);
+      try {
+        const jsonStr = await callGeminiApi(prompt, true, schema);
+        const parsedQ = JSON.parse(jsonStr);
 
-                const generatedQObj = {
-                    id: 'ai_' + Date.now(),
-                    q: parsedQ.q,
-                    options: parsedQ.options,
-                    ans: parsedQ.ans.toUpperCase().charAt(0)
-                };
+        const generatedQObj = {
+          id: 'ai_' + Date.now(),
+          q: parsedQ.q,
+          options: parsedQ.options,
+          ans: parsedQ.ans.toUpperCase().charAt(0)
+        };
 
-                const modalEl = document.getElementById('aiGeneratorModal');
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                if (modal) modal.hide();
+        const modalEl = document.getElementById('aiGeneratorModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
 
-                currentSession.mode = 'ai';
-                currentSession.moduleId = null;
-                currentSession.questions = [generatedQObj];
-                currentSession.currentIndex = 0;
+        currentSession.mode = 'ai';
+        currentSession.moduleId = null;
+        currentSession.questions = [generatedQObj];
+        currentSession.currentIndex = 0;
 
-                document.getElementById('quizModuleBadge').innerText = `AI: ${topicInput}`;
-                document.getElementById('landingView').classList.add('d-none');
-                document.getElementById('summaryView').classList.add('d-none');
-                document.getElementById('bookmarksView').classList.add('d-none');
-                document.getElementById('quizView').classList.remove('d-none');
-                document.getElementById('statsBar').classList.add('d-none');
+        document.getElementById('quizModuleBadge').innerText = `AI: ${topicInput}`;
+        document.getElementById('landingView').classList.add('d-none');
+        document.getElementById('summaryView').classList.add('d-none');
+        document.getElementById('bookmarksView').classList.add('d-none');
+        document.getElementById('quizView').classList.remove('d-none');
+        document.getElementById('statsBar').classList.add('d-none');
 
-                renderCurrentQuestion();
-            } catch (err) {
-                alert("Failed to generate AI question. Please try again.");
-            } finally {
-                status.classList.add('d-none');
-                btn.disabled = false;
-            }
-        }
+        renderCurrentQuestion();
+      } catch (err) {
+        alert("Failed to generate AI question. Please try again.");
+      } finally {
+        status.classList.add('d-none');
+        btn.disabled = false;
+      }
+    }
 
-        // Helper functions
-        function getAllQuestionsMap() {
-            let map = {};
-            rawModulesData.forEach(m => {
-                m.questions.forEach(q => {
-                    map[q.id] = q;
-                });
-            });
-            return map;
-        }
+    // Helper functions
+    function getAllQuestionsMap() {
+      let map = {};
+      rawModulesData.forEach(m => {
+        m.questions.forEach(q => {
+          map[q.id] = q;
+        });
+      });
+      return map;
+    }
 
-        function renderModulesGrid() {
-            const grid = document.getElementById('modulesGrid');
-            grid.innerHTML = '';
+    function renderModulesGrid() {
+      const grid = document.getElementById('modulesGrid');
+      grid.innerHTML = '';
 
-            rawModulesData.forEach((m, idx) => {
-                const totalModQ = m.questions.length;
-                const weekAnswers = getScopeAnswers(m.id);
-                const answeredModQ = m.questions.filter(q => weekAnswers[q.id] !== undefined).length;
-                const progressPct = Math.round((answeredModQ / totalModQ) * 100);
+      rawModulesData.forEach((m, idx) => {
+        const totalModQ = m.questions.length;
+        const weekAnswers = getScopeAnswers(m.id);
+        const answeredModQ = m.questions.filter(q => weekAnswers[q.id] !== undefined).length;
+        const progressPct = Math.round((answeredModQ / totalModQ) * 100);
 
-                const col = document.createElement('div');
-                col.className = 'col-sm-6 col-md-4 col-lg-3';
-                col.innerHTML = `
+        const col = document.createElement('div');
+        col.className = 'col-sm-6 col-md-4 col-lg-3';
+        col.innerHTML = `
           <div class="card module-card h-100 rounded-4 shadow-sm p-3 bg-body">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-1">Week ${idx + 1}</span>
@@ -908,242 +890,242 @@ ${JSON.stringify(missed, null, 2)}`;
             </div>
           </div>
         `;
-                grid.appendChild(col);
-            });
+        grid.appendChild(col);
+      });
+    }
+
+    function updateGlobalStats() {
+      // Calculate total unique answered questions across all scopes
+      const allQMap = getAllQuestionsMap();
+      const uniqueAttemptedMap = {};
+      let totalCorrect = 0;
+
+      Object.keys(userState.userAnswers).forEach(scopeKey => {
+        const scopeObj = userState.userAnswers[scopeKey];
+        Object.keys(scopeObj).forEach(qId => {
+          if (scopeObj[qId] !== undefined) {
+            uniqueAttemptedMap[qId] = scopeObj[qId];
+          }
+        });
+      });
+
+      const totalAttempted = Object.keys(uniqueAttemptedMap).length;
+
+      Object.keys(uniqueAttemptedMap).forEach(qId => {
+        if (allQMap[qId] && uniqueAttemptedMap[qId] === allQMap[qId].ans) {
+          totalCorrect++;
+        }
+      });
+
+      const accuracy = totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 0;
+
+      document.getElementById('statTotalQ').innerText = TOTAL_ALL_QUESTIONS;
+      document.getElementById('statAttempted').innerText = totalAttempted;
+      document.getElementById('statAccuracy').innerText = accuracy + '%';
+
+      const bmCount = userState.bookmarks.length;
+      document.getElementById('statBookmarked').innerText = bmCount;
+      document.getElementById('headerBookmarkCount').innerText = bmCount;
+    }
+
+    function showLandingView() {
+      document.getElementById('landingView').classList.remove('d-none');
+      document.getElementById('statsBar').classList.remove('d-none');
+      document.getElementById('quizView').classList.add('d-none');
+      document.getElementById('summaryView').classList.add('d-none');
+      document.getElementById('bookmarksView').classList.add('d-none');
+      renderModulesGrid();
+      updateGlobalStats();
+    }
+
+    function initiatePracticeSession(mode, moduleId = null) {
+      const scopeKey = mode === 'all' ? 'all' : moduleId;
+      const savedIdx = userState.savedIndexes[scopeKey] || 0;
+      const scopeAnswers = getScopeAnswers(scopeKey);
+
+      let targetQuestions = [];
+      if (mode === 'all') {
+        rawModulesData.forEach(m => targetQuestions.push(...m.questions));
+      } else if (mode === 'module') {
+        const mod = rawModulesData.find(m => m.id === moduleId);
+        targetQuestions = mod ? mod.questions : [];
+      }
+
+      const hasAnsweredInScope = targetQuestions.some(q => scopeAnswers[q.id] !== undefined);
+
+      if (savedIdx > 0 || hasAnsweredInScope) {
+        pendingSessionTarget = { mode, moduleId };
+        const titleText = mode === 'all' ? "All Questions Session" : (rawModulesData.find(m => m.id === moduleId)?.title || "Practice Session");
+        document.getElementById('resumeModalTitle').innerText = `Start or Resume ${titleText}?`;
+        document.getElementById('resumeModalBody').innerText = `You have existing answers or saved progress for ${titleText}. Would you like to resume from Question ${savedIdx + 1} or start fresh from the beginning?`;
+
+        const modal = new bootstrap.Modal(document.getElementById('resumePromptModal'));
+        modal.show();
+      } else {
+        startPracticeMode(mode, moduleId, 0);
+      }
+    }
+
+    function startPracticeMode(mode, moduleId = null, startFromIndex = 0) {
+      currentSession.mode = mode;
+      currentSession.moduleId = moduleId;
+
+      if (mode === 'all') {
+        currentSession.questions = [];
+        rawModulesData.forEach(m => currentSession.questions.push(...m.questions));
+        document.getElementById('quizModuleBadge').innerText = "All Questions";
+      } else if (mode === 'module') {
+        const mod = rawModulesData.find(m => m.id === moduleId);
+        currentSession.questions = mod ? [...mod.questions] : [];
+        document.getElementById('quizModuleBadge').innerText = mod ? mod.title : "Practice";
+      }
+
+      currentSession.currentIndex = (startFromIndex >= 0 && startFromIndex < currentSession.questions.length) ? startFromIndex : 0;
+
+      document.getElementById('landingView').classList.add('d-none');
+      document.getElementById('summaryView').classList.add('d-none');
+      document.getElementById('bookmarksView').classList.add('d-none');
+      document.getElementById('quizView').classList.remove('d-none');
+      document.getElementById('statsBar').classList.add('d-none');
+
+      renderCurrentQuestion();
+    }
+
+    function renderCurrentQuestion() {
+      const q = currentSession.questions[currentSession.currentIndex];
+      if (!q) return;
+
+      const scopeKey = currentSession.mode === 'all' ? 'all' : currentSession.moduleId;
+      if (scopeKey) {
+        userState.savedIndexes[scopeKey] = currentSession.currentIndex;
+        saveState();
+      }
+
+      const total = currentSession.questions.length;
+      const currentNum = currentSession.currentIndex + 1;
+
+      document.getElementById('currentQNum').innerText = currentNum;
+      document.getElementById('totalQNum').innerText = total;
+
+      const pct = Math.round((currentNum / total) * 100);
+      document.getElementById('quizProgressBar').style.width = pct + '%';
+      document.getElementById('progressPercent').innerText = pct + '%';
+
+      document.getElementById('questionText').innerText = `${currentNum}. ${q.q}`;
+
+      document.getElementById('feedbackAlert').classList.add('d-none');
+      document.getElementById('aiExplanationBox').classList.add('d-none');
+
+      const isBookmarked = userState.bookmarks.includes(q.id);
+      document.getElementById('bookmarkIcon').className = isBookmarked ? "bi bi-bookmark-fill text-warning" : "bi bi-bookmark";
+
+      const optionsContainer = document.getElementById('optionsContainer');
+      optionsContainer.innerHTML = '';
+
+      const scopeAnswers = getScopeAnswers(scopeKey);
+      const existingAns = scopeAnswers[q.id];
+
+      q.options.forEach(opt => {
+        const optionKey = opt.trim().charAt(0);
+        const btn = document.createElement('button');
+        btn.className = 'btn option-btn p-3 rounded-3 bg-body text-start';
+
+        if (existingAns) {
+          btn.disabled = true;
+          if (optionKey === q.ans) btn.classList.add('show-actual-correct');
+          if (optionKey === existingAns) {
+            btn.classList.add(existingAns === q.ans ? 'selected-correct' : 'selected-wrong');
+          }
+        } else {
+          btn.onclick = () => handleAnswerSelect(q, optionKey);
         }
 
-        function updateGlobalStats() {
-            // Calculate total unique answered questions across all scopes
-            const allQMap = getAllQuestionsMap();
-            const uniqueAttemptedMap = {};
-            let totalCorrect = 0;
+        btn.innerText = opt;
+        optionsContainer.appendChild(btn);
+      });
 
-            Object.keys(userState.userAnswers).forEach(scopeKey => {
-                const scopeObj = userState.userAnswers[scopeKey];
-                Object.keys(scopeObj).forEach(qId => {
-                    if (scopeObj[qId] !== undefined) {
-                        uniqueAttemptedMap[qId] = scopeObj[qId];
-                    }
-                });
-            });
+      if (existingAns) {
+        showFeedback(existingAns === q.ans, q.ans);
+      }
 
-            const totalAttempted = Object.keys(uniqueAttemptedMap).length;
+      document.getElementById('prevBtn').disabled = currentSession.currentIndex === 0;
+      const nextBtn = document.getElementById('nextBtn');
+      if (currentSession.currentIndex === total - 1) {
+        nextBtn.innerHTML = 'Finish <i class="bi bi-check2-circle ms-1"></i>';
+      } else {
+        nextBtn.innerHTML = 'Next <i class="bi bi-chevron-right ms-1"></i>';
+      }
+    }
 
-            Object.keys(uniqueAttemptedMap).forEach(qId => {
-                if (allQMap[qId] && uniqueAttemptedMap[qId] === allQMap[qId].ans) {
-                    totalCorrect++;
-                }
-            });
+    function handleAnswerSelect(q, selectedOptionKey) {
+      const scopeKey = currentSession.mode === 'all' ? 'all' : currentSession.moduleId;
+      const scopeAnswers = getScopeAnswers(scopeKey);
+      scopeAnswers[q.id] = selectedOptionKey;
+      saveState();
+      renderCurrentQuestion();
+    }
 
-            const accuracy = totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 0;
+    function showFeedback(isCorrect, correctAns) {
+      const feedbackAlert = document.getElementById('feedbackAlert');
+      const feedbackTitle = document.getElementById('feedbackTitle');
+      const feedbackMsg = document.getElementById('feedbackMsg');
 
-            document.getElementById('statTotalQ').innerText = TOTAL_ALL_QUESTIONS;
-            document.getElementById('statAttempted').innerText = totalAttempted;
-            document.getElementById('statAccuracy').innerText = accuracy + '%';
+      feedbackAlert.classList.remove('d-none', 'alert-success', 'alert-danger');
 
-            const bmCount = userState.bookmarks.length;
-            document.getElementById('statBookmarked').innerText = bmCount;
-            document.getElementById('headerBookmarkCount').innerText = bmCount;
-        }
+      if (isCorrect) {
+        feedbackAlert.classList.add('alert-success');
+        feedbackTitle.innerText = "Correct Answer!";
+        feedbackMsg.innerText = `Great job! Option ${correctAns} is correct.`;
+      } else {
+        feedbackAlert.classList.add('alert-danger');
+        feedbackTitle.innerText = "Incorrect";
+        feedbackMsg.innerText = `The correct option is Option ${correctAns}.`;
+      }
+    }
 
-        function showLandingView() {
-            document.getElementById('landingView').classList.remove('d-none');
-            document.getElementById('statsBar').classList.remove('d-none');
-            document.getElementById('quizView').classList.add('d-none');
-            document.getElementById('summaryView').classList.add('d-none');
-            document.getElementById('bookmarksView').classList.add('d-none');
-            renderModulesGrid();
-            updateGlobalStats();
-        }
+    function toggleCurrentBookmark() {
+      const q = currentSession.questions[currentSession.currentIndex];
+      if (!q) return;
 
-        function initiatePracticeSession(mode, moduleId = null) {
-            const scopeKey = mode === 'all' ? 'all' : moduleId;
-            const savedIdx = userState.savedIndexes[scopeKey] || 0;
-            const scopeAnswers = getScopeAnswers(scopeKey);
+      const idx = userState.bookmarks.indexOf(q.id);
+      if (idx > -1) {
+        userState.bookmarks.splice(idx, 1);
+      } else {
+        userState.bookmarks.push(q.id);
+      }
+      saveState();
+      renderCurrentQuestion();
+    }
 
-            let targetQuestions = [];
-            if (mode === 'all') {
-                rawModulesData.forEach(m => targetQuestions.push(...m.questions));
-            } else if (mode === 'module') {
-                const mod = rawModulesData.find(m => m.id === moduleId);
-                targetQuestions = mod ? mod.questions : [];
-            }
+    function navigateQuestion(direction) {
+      const newIndex = currentSession.currentIndex + direction;
+      if (newIndex >= 0 && newIndex < currentSession.questions.length) {
+        currentSession.currentIndex = newIndex;
+        renderCurrentQuestion();
+      } else if (newIndex >= currentSession.questions.length) {
+        showSummaryView();
+      }
+    }
 
-            const hasAnsweredInScope = targetQuestions.some(q => scopeAnswers[q.id] !== undefined);
+    function showBookmarksReviewView() {
+      document.getElementById('landingView').classList.add('d-none');
+      document.getElementById('quizView').classList.add('d-none');
+      document.getElementById('summaryView').classList.add('d-none');
+      document.getElementById('bookmarksView').classList.remove('d-none');
+      document.getElementById('statsBar').classList.add('d-none');
 
-            if (savedIdx > 0 || hasAnsweredInScope) {
-                pendingSessionTarget = { mode, moduleId };
-                const titleText = mode === 'all' ? "All Questions Session" : (rawModulesData.find(m => m.id === moduleId)?.title || "Practice Session");
-                document.getElementById('resumeModalTitle').innerText = `Start or Resume ${titleText}?`;
-                document.getElementById('resumeModalBody').innerText = `You have existing answers or saved progress for ${titleText}. Would you like to resume from Question ${savedIdx + 1} or start fresh from the beginning?`;
+      renderBookmarksContainer();
+    }
 
-                const modal = new bootstrap.Modal(document.getElementById('resumePromptModal'));
-                modal.show();
-            } else {
-                startPracticeMode(mode, moduleId, 0);
-            }
-        }
+    function renderBookmarksContainer() {
+      const container = document.getElementById('bookmarksContainer');
+      container.innerHTML = '';
 
-        function startPracticeMode(mode, moduleId = null, startFromIndex = 0) {
-            currentSession.mode = mode;
-            currentSession.moduleId = moduleId;
+      const allQMap = getAllQuestionsMap();
+      const bookmarkedQuestions = userState.bookmarks.map(id => allQMap[id]).filter(Boolean);
 
-            if (mode === 'all') {
-                currentSession.questions = [];
-                rawModulesData.forEach(m => currentSession.questions.push(...m.questions));
-                document.getElementById('quizModuleBadge').innerText = "All Questions";
-            } else if (mode === 'module') {
-                const mod = rawModulesData.find(m => m.id === moduleId);
-                currentSession.questions = mod ? [...mod.questions] : [];
-                document.getElementById('quizModuleBadge').innerText = mod ? mod.title : "Practice";
-            }
-
-            currentSession.currentIndex = (startFromIndex >= 0 && startFromIndex < currentSession.questions.length) ? startFromIndex : 0;
-
-            document.getElementById('landingView').classList.add('d-none');
-            document.getElementById('summaryView').classList.add('d-none');
-            document.getElementById('bookmarksView').classList.add('d-none');
-            document.getElementById('quizView').classList.remove('d-none');
-            document.getElementById('statsBar').classList.add('d-none');
-
-            renderCurrentQuestion();
-        }
-
-        function renderCurrentQuestion() {
-            const q = currentSession.questions[currentSession.currentIndex];
-            if (!q) return;
-
-            const scopeKey = currentSession.mode === 'all' ? 'all' : currentSession.moduleId;
-            if (scopeKey) {
-                userState.savedIndexes[scopeKey] = currentSession.currentIndex;
-                saveState();
-            }
-
-            const total = currentSession.questions.length;
-            const currentNum = currentSession.currentIndex + 1;
-
-            document.getElementById('currentQNum').innerText = currentNum;
-            document.getElementById('totalQNum').innerText = total;
-
-            const pct = Math.round((currentNum / total) * 100);
-            document.getElementById('quizProgressBar').style.width = pct + '%';
-            document.getElementById('progressPercent').innerText = pct + '%';
-
-            document.getElementById('questionText').innerText = `${currentNum}. ${q.q}`;
-
-            document.getElementById('feedbackAlert').classList.add('d-none');
-            document.getElementById('aiExplanationBox').classList.add('d-none');
-
-            const isBookmarked = userState.bookmarks.includes(q.id);
-            document.getElementById('bookmarkIcon').className = isBookmarked ? "bi bi-bookmark-fill text-warning" : "bi bi-bookmark";
-
-            const optionsContainer = document.getElementById('optionsContainer');
-            optionsContainer.innerHTML = '';
-
-            const scopeAnswers = getScopeAnswers(scopeKey);
-            const existingAns = scopeAnswers[q.id];
-
-            q.options.forEach(opt => {
-                const optionKey = opt.trim().charAt(0);
-                const btn = document.createElement('button');
-                btn.className = 'btn option-btn p-3 rounded-3 bg-body text-start';
-
-                if (existingAns) {
-                    btn.disabled = true;
-                    if (optionKey === q.ans) btn.classList.add('show-actual-correct');
-                    if (optionKey === existingAns) {
-                        btn.classList.add(existingAns === q.ans ? 'selected-correct' : 'selected-wrong');
-                    }
-                } else {
-                    btn.onclick = () => handleAnswerSelect(q, optionKey);
-                }
-
-                btn.innerText = opt;
-                optionsContainer.appendChild(btn);
-            });
-
-            if (existingAns) {
-                showFeedback(existingAns === q.ans, q.ans);
-            }
-
-            document.getElementById('prevBtn').disabled = currentSession.currentIndex === 0;
-            const nextBtn = document.getElementById('nextBtn');
-            if (currentSession.currentIndex === total - 1) {
-                nextBtn.innerHTML = 'Finish <i class="bi bi-check2-circle ms-1"></i>';
-            } else {
-                nextBtn.innerHTML = 'Next <i class="bi bi-chevron-right ms-1"></i>';
-            }
-        }
-
-        function handleAnswerSelect(q, selectedOptionKey) {
-            const scopeKey = currentSession.mode === 'all' ? 'all' : currentSession.moduleId;
-            const scopeAnswers = getScopeAnswers(scopeKey);
-            scopeAnswers[q.id] = selectedOptionKey;
-            saveState();
-            renderCurrentQuestion();
-        }
-
-        function showFeedback(isCorrect, correctAns) {
-            const feedbackAlert = document.getElementById('feedbackAlert');
-            const feedbackTitle = document.getElementById('feedbackTitle');
-            const feedbackMsg = document.getElementById('feedbackMsg');
-
-            feedbackAlert.classList.remove('d-none', 'alert-success', 'alert-danger');
-
-            if (isCorrect) {
-                feedbackAlert.classList.add('alert-success');
-                feedbackTitle.innerText = "Correct Answer!";
-                feedbackMsg.innerText = `Great job! Option ${correctAns} is correct.`;
-            } else {
-                feedbackAlert.classList.add('alert-danger');
-                feedbackTitle.innerText = "Incorrect";
-                feedbackMsg.innerText = `The correct option is Option ${correctAns}.`;
-            }
-        }
-
-        function toggleCurrentBookmark() {
-            const q = currentSession.questions[currentSession.currentIndex];
-            if (!q) return;
-
-            const idx = userState.bookmarks.indexOf(q.id);
-            if (idx > -1) {
-                userState.bookmarks.splice(idx, 1);
-            } else {
-                userState.bookmarks.push(q.id);
-            }
-            saveState();
-            renderCurrentQuestion();
-        }
-
-        function navigateQuestion(direction) {
-            const newIndex = currentSession.currentIndex + direction;
-            if (newIndex >= 0 && newIndex < currentSession.questions.length) {
-                currentSession.currentIndex = newIndex;
-                renderCurrentQuestion();
-            } else if (newIndex >= currentSession.questions.length) {
-                showSummaryView();
-            }
-        }
-
-        function showBookmarksReviewView() {
-            document.getElementById('landingView').classList.add('d-none');
-            document.getElementById('quizView').classList.add('d-none');
-            document.getElementById('summaryView').classList.add('d-none');
-            document.getElementById('bookmarksView').classList.remove('d-none');
-            document.getElementById('statsBar').classList.add('d-none');
-
-            renderBookmarksContainer();
-        }
-
-        function renderBookmarksContainer() {
-            const container = document.getElementById('bookmarksContainer');
-            container.innerHTML = '';
-
-            const allQMap = getAllQuestionsMap();
-            const bookmarkedQuestions = userState.bookmarks.map(id => allQMap[id]).filter(Boolean);
-
-            if (bookmarkedQuestions.length === 0) {
-                container.innerHTML = `
+      if (bookmarkedQuestions.length === 0) {
+        container.innerHTML = `
           <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-body">
             <i class="bi bi-bookmark-x text-muted display-4 mb-3"></i>
             <h3 class="h5 fw-bold">No Bookmarked Questions</h3>
@@ -1153,24 +1135,24 @@ ${JSON.stringify(missed, null, 2)}`;
             </div>
           </div>
         `;
-                return;
-            }
+        return;
+      }
 
-            bookmarkedQuestions.forEach((q, idx) => {
-                const card = document.createElement('div');
-                card.className = 'card border-0 shadow-sm rounded-4 p-4 bg-body';
+      bookmarkedQuestions.forEach((q, idx) => {
+        const card = document.createElement('div');
+        card.className = 'card border-0 shadow-sm rounded-4 p-4 bg-body';
 
-                const optionsList = q.options.map(opt => {
-                    const optKey = opt.trim().charAt(0);
-                    const isCorrect = optKey === q.ans;
-                    return `<div class="p-2.5 rounded-3 mb-1.5 border small ${isCorrect ? 'bg-success-subtle border-success text-success fw-semibold' : 'bg-body-tertiary'}">
+        const optionsList = q.options.map(opt => {
+          const optKey = opt.trim().charAt(0);
+          const isCorrect = optKey === q.ans;
+          return `<div class="p-2.5 rounded-3 mb-1.5 border small ${isCorrect ? 'bg-success-subtle border-success text-success fw-semibold' : 'bg-body-tertiary'}">
             ${opt} ${isCorrect ? '<span class="badge bg-success ms-2">Correct Answer</span>' : ''}
           </div>`;
-                }).join('');
+        }).join('');
 
-                const explainBoxId = `bookmark_ai_explain_${q.id}`;
+        const explainBoxId = `bookmark_ai_explain_${q.id}`;
 
-                card.innerHTML = `
+        card.innerHTML = `
           <div class="d-flex justify-content-between align-items-start mb-3">
             <div class="fw-bold fs-6">${idx + 1}. ${q.q}</div>
             <button class="btn btn-sm btn-outline-warning text-dark border-0 ms-2" onclick="removeBookmarkFromView('${q.id}')" title="Remove Bookmark">
@@ -1187,99 +1169,100 @@ ${JSON.stringify(missed, null, 2)}`;
           <div id="${explainBoxId}" class="mt-3 p-3 rounded-3 ai-box d-none"></div>
         `;
 
-                container.appendChild(card);
-            });
+        container.appendChild(card);
+      });
+    }
+
+    function removeBookmarkFromView(qId) {
+      const idx = userState.bookmarks.indexOf(qId);
+      if (idx > -1) {
+        userState.bookmarks.splice(idx, 1);
+        saveState();
+        renderBookmarksContainer();
+      }
+    }
+
+    function openGridModal() {
+      const container = document.getElementById('modalGridContainer');
+      container.innerHTML = '';
+
+      const scopeKey = currentSession.mode === 'all' ? 'all' : currentSession.moduleId;
+      const scopeAnswers = getScopeAnswers(scopeKey);
+
+      currentSession.questions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn grid-nav-item';
+
+        const userAns = scopeAnswers[q.id];
+        if (userAns) {
+          btn.classList.add(userAns === q.ans ? 'btn-success' : 'btn-danger');
+        } else {
+          btn.classList.add('btn-outline-secondary');
         }
 
-        function removeBookmarkFromView(qId) {
-            const idx = userState.bookmarks.indexOf(qId);
-            if (idx > -1) {
-                userState.bookmarks.splice(idx, 1);
-                saveState();
-                renderBookmarksContainer();
-            }
-        }
+        if (userState.bookmarks.includes(q.id)) btn.classList.add('border', 'border-warning');
+        if (idx === currentSession.currentIndex) btn.classList.add('border-3', 'border-primary');
 
-        function openGridModal() {
-            const container = document.getElementById('modalGridContainer');
-            container.innerHTML = '';
+        btn.innerText = idx + 1;
+        btn.onclick = () => {
+          currentSession.currentIndex = idx;
+          renderCurrentQuestion();
+          const modalEl = document.getElementById('gridModal');
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) modal.hide();
+        };
 
-            const scopeKey = currentSession.mode === 'all' ? 'all' : currentSession.moduleId;
-            const scopeAnswers = getScopeAnswers(scopeKey);
+        container.appendChild(btn);
+      });
 
-            currentSession.questions.forEach((q, idx) => {
-                const btn = document.createElement('button');
-                btn.className = 'btn grid-nav-item';
+      const modal = new bootstrap.Modal(document.getElementById('gridModal'));
+      modal.show();
+    }
 
-                const userAns = scopeAnswers[q.id];
-                if (userAns) {
-                    btn.classList.add(userAns === q.ans ? 'btn-success' : 'btn-danger');
-                } else {
-                    btn.classList.add('btn-outline-secondary');
-                }
+    function showSummaryView() {
+      document.getElementById('quizView').classList.add('d-none');
+      document.getElementById('summaryView').classList.remove('d-none');
+      document.getElementById('aiAnalysisContainer').classList.add('d-none');
 
-                if (userState.bookmarks.includes(q.id)) btn.classList.add('border', 'border-warning');
-                if (idx === currentSession.currentIndex) btn.classList.add('border-3', 'border-primary');
+      const scopeKey = currentSession.mode === 'all' ? 'all' : currentSession.moduleId;
+      const scopeAnswers = getScopeAnswers(scopeKey);
 
-                btn.innerText = idx + 1;
-                btn.onclick = () => {
-                    currentSession.currentIndex = idx;
-                    renderCurrentQuestion();
-                    const modalEl = document.getElementById('gridModal');
-                    const modal = bootstrap.Modal.getInstance(modalEl);
-                    if (modal) modal.hide();
-                };
+      let correctCount = 0;
+      currentSession.questions.forEach(q => {
+        if (scopeAnswers[q.id] === q.ans) correctCount++;
+      });
 
-                container.appendChild(btn);
-            });
+      const total = currentSession.questions.length;
+      const pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
 
-            const modal = new bootstrap.Modal(document.getElementById('gridModal'));
-            modal.show();
-        }
+      document.getElementById('summaryScore').innerText = `${correctCount} / ${total}`;
+      document.getElementById('summaryPercent').innerText = `${pct}% Accuracy`;
 
-        function showSummaryView() {
-            document.getElementById('quizView').classList.add('d-none');
-            document.getElementById('summaryView').classList.remove('d-none');
-            document.getElementById('aiAnalysisContainer').classList.add('d-none');
+      renderReviewList('all');
+    }
 
-            const scopeKey = currentSession.mode === 'all' ? 'all' : currentSession.moduleId;
-            const scopeAnswers = getScopeAnswers(scopeKey);
+    function renderReviewList(filter = 'all') {
+      const reviewList = document.getElementById('reviewList');
+      reviewList.innerHTML = '';
 
-            let correctCount = 0;
-            currentSession.questions.forEach(q => {
-                if (scopeAnswers[q.id] === q.ans) correctCount++;
-            });
+      const scopeKey = currentSession.mode === 'all' ? 'all' : currentSession.moduleId;
+      const scopeAnswers = getScopeAnswers(scopeKey);
 
-            const total = currentSession.questions.length;
-            const pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+      currentSession.questions.forEach((q, idx) => {
+        const userAns = scopeAnswers[q.id];
+        const isCorrect = userAns === q.ans;
+        const isBookmarked = userState.bookmarks.includes(q.id);
 
-            document.getElementById('summaryScore').innerText = `${correctCount} / ${total}`;
-            document.getElementById('summaryPercent').innerText = `${pct}% Accuracy`;
+        if (filter === 'correct' && !isCorrect) return;
+        if (filter === 'wrong' && (isCorrect || !userAns)) return;
+        if (filter === 'bookmarked' && !isBookmarked) return;
 
-            renderReviewList('all');
-        }
+        const card = document.createElement('div');
+        card.className = `card border-0 shadow-sm rounded-4 p-3 bg-body border-start border-4 ${
+          isCorrect ? 'border-success' : 'border-danger'
+        }`;
 
-        function renderReviewList(filter = 'all') {
-            const reviewList = document.getElementById('reviewList');
-            reviewList.innerHTML = '';
-
-            const scopeKey = currentSession.mode === 'all' ? 'all' : currentSession.moduleId;
-            const scopeAnswers = getScopeAnswers(scopeKey);
-
-            currentSession.questions.forEach((q, idx) => {
-                const userAns = scopeAnswers[q.id];
-                const isCorrect = userAns === q.ans;
-                const isBookmarked = userState.bookmarks.includes(q.id);
-
-                if (filter === 'correct' && !isCorrect) return;
-                if (filter === 'wrong' && (isCorrect || !userAns)) return;
-                if (filter === 'bookmarked' && !isBookmarked) return;
-
-                const card = document.createElement('div');
-                card.className = `card border-0 shadow-sm rounded-4 p-3 bg-body border-start border-4 ${isCorrect ? 'border-success' : 'border-danger'
-                    }`;
-
-                card.innerHTML = `
+        card.innerHTML = `
           <div class="d-flex justify-content-between align-items-start mb-2">
             <div class="fw-bold">${idx + 1}. ${q.q}</div>
             <button class="btn btn-sm text-warning p-0" onclick="toggleBookmarkInReview('${q.id}', this)" title="Bookmark Question">
@@ -1290,136 +1273,135 @@ ${JSON.stringify(missed, null, 2)}`;
           <div class="small text-muted">Correct Answer: <span class="fw-bold text-success">Option ${q.ans}</span></div>
         `;
 
-                reviewList.appendChild(card);
-            });
+        reviewList.appendChild(card);
+      });
+    }
+
+    function toggleBookmarkInReview(qId, btn) {
+      const idx = userState.bookmarks.indexOf(qId);
+      if (idx > -1) {
+        userState.bookmarks.splice(idx, 1);
+        btn.querySelector('i').className = 'bi bi-bookmark';
+      } else {
+        userState.bookmarks.push(qId);
+        btn.querySelector('i').className = 'bi bi-bookmark-fill';
+      }
+      saveState();
+    }
+
+    function filterReview(filter, btnElement) {
+      document.querySelectorAll('.review-filter-btn').forEach(b => b.classList.remove('active'));
+      if (btnElement) btnElement.classList.add('active');
+      renderReviewList(filter);
+    }
+
+    function resetWeekData(weekId) {
+      const mod = rawModulesData.find(m => m.id === weekId);
+      if (!mod) return;
+
+      if (confirm(`Are you sure you want to reset your answers and saved progress for ${mod.title}?`)) {
+        userState.userAnswers[weekId] = {};
+        delete userState.savedIndexes[weekId];
+        saveState();
+        renderModulesGrid();
+      }
+    }
+
+    function resetAllData() {
+      if (confirm("Are you sure you want to reset ALL practice data across all weeks and Practice All sessions? Bookmarked questions will be preserved.")) {
+        userState.userAnswers = {};
+        userState.savedIndexes = {};
+        saveState();
+        showLandingView();
+      }
+    }
+
+    function applyTheme(theme) {
+      userState.theme = theme;
+      document.documentElement.setAttribute('data-bs-theme', theme);
+      document.getElementById('themeIcon').className = theme === 'dark' ? 'bi bi-sun-fill text-warning' : 'bi bi-moon-stars-fill';
+    }
+
+    // App Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      showLandingView();
+
+      // Navigation & Header Event Listeners
+      document.getElementById('navHomeBtn').addEventListener('click', showLandingView);
+      document.getElementById('exitQuizBtn').addEventListener('click', showLandingView);
+      document.getElementById('exitBookmarksBtn').addEventListener('click', showLandingView);
+      document.getElementById('summaryReturnHomeBtn').addEventListener('click', showLandingView);
+
+      document.getElementById('practiceAllBtn').addEventListener('click', () => initiatePracticeSession('all'));
+      document.getElementById('resetAllBtn').addEventListener('click', resetAllData);
+
+      document.getElementById('viewBookmarksHeaderBtn').addEventListener('click', showBookmarksReviewView);
+      document.getElementById('practiceBookmarksBtn').addEventListener('click', showBookmarksReviewView);
+      document.getElementById('statBookmarkedCard').addEventListener('click', showBookmarksReviewView);
+
+      // Modal Resume & Reset Actions
+      document.getElementById('resumeSessionBtn').addEventListener('click', () => {
+        const modalEl = document.getElementById('resumePromptModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+
+        if (pendingSessionTarget) {
+          const scopeKey = pendingSessionTarget.mode === 'all' ? 'all' : pendingSessionTarget.moduleId;
+          const savedIdx = userState.savedIndexes[scopeKey] || 0;
+          startPracticeMode(pendingSessionTarget.mode, pendingSessionTarget.moduleId, savedIdx);
         }
+      });
 
-        function toggleBookmarkInReview(qId, btn) {
-            const idx = userState.bookmarks.indexOf(qId);
-            if (idx > -1) {
-                userState.bookmarks.splice(idx, 1);
-                btn.querySelector('i').className = 'bi bi-bookmark';
-            } else {
-                userState.bookmarks.push(qId);
-                btn.querySelector('i').className = 'bi bi-bookmark-fill';
-            }
-            saveState();
+      document.getElementById('restartSessionBtn').addEventListener('click', () => {
+        const modalEl = document.getElementById('resumePromptModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+
+        if (pendingSessionTarget) {
+          const mode = pendingSessionTarget.mode;
+          const moduleId = pendingSessionTarget.moduleId;
+          const scopeKey = mode === 'all' ? 'all' : moduleId;
+
+          userState.savedIndexes[scopeKey] = 0;
+          userState.userAnswers[scopeKey] = {};
+
+          saveState();
+          startPracticeMode(mode, moduleId, 0);
         }
+      });
 
-        function filterReview(filter, btnElement) {
-            document.querySelectorAll('.review-filter-btn').forEach(b => b.classList.remove('active'));
-            if (btnElement) btnElement.classList.add('active');
-            renderReviewList(filter);
-        }
+      // Question Controls
+      document.getElementById('prevBtn').addEventListener('click', () => navigateQuestion(-1));
+      document.getElementById('nextBtn').addEventListener('click', () => navigateQuestion(1));
+      document.getElementById('openGridBtn').addEventListener('click', openGridModal);
+      document.getElementById('bookmarkBtn').addEventListener('click', toggleCurrentBookmark);
 
-        function resetWeekData(weekId) {
-            const mod = rawModulesData.find(m => m.id === weekId);
-            if (!mod) return;
+      document.getElementById('explainAiBtn').addEventListener('click', explainCurrentQuestionWithAI);
+      document.getElementById('summaryAiAnalysisBtn').addEventListener('click', analyzePerformanceWithAI);
+      document.getElementById('summaryRetryBtn').addEventListener('click', () => initiatePracticeSession(currentSession.mode, currentSession.moduleId));
 
-            if (confirm(`Are you sure you want to reset your answers and saved progress for ${mod.title}?`)) {
-                userState.userAnswers[weekId] = {};
-                delete userState.savedIndexes[weekId];
-                saveState();
-                renderModulesGrid();
-            }
-        }
+      document.getElementById('openAiModalBtn').addEventListener('click', () => {
+        const modal = new bootstrap.Modal(document.getElementById('aiGeneratorModal'));
+        modal.show();
+      });
 
-        function resetAllData() {
-            if (confirm("Are you sure you want to reset ALL practice data across all weeks and Practice All sessions? Bookmarked questions will be preserved.")) {
-                userState.userAnswers = {};
-                userState.savedIndexes = {};
-                saveState();
-                showLandingView();
-            }
-        }
+      document.getElementById('generateQuestionBtn').addEventListener('click', generateAIQuestion);
 
-        function applyTheme(theme) {
-            userState.theme = theme;
-            document.documentElement.setAttribute('data-bs-theme', theme);
-            document.getElementById('themeIcon').className = theme === 'dark' ? 'bi bi-sun-fill text-warning' : 'bi bi-moon-stars-fill';
-        }
+      document.getElementById('themeToggleBtn').addEventListener('click', () => {
+        const newTheme = userState.theme === 'light' ? 'dark' : 'light';
+        applyTheme(newTheme);
+        saveState();
+      });
 
-        // App Initialization
-        document.addEventListener('DOMContentLoaded', () => {
-            loadState();
-            showLandingView();
-
-            // Navigation & Header Event Listeners
-            document.getElementById('navHomeBtn').addEventListener('click', showLandingView);
-            document.getElementById('exitQuizBtn').addEventListener('click', showLandingView);
-            document.getElementById('exitBookmarksBtn').addEventListener('click', showLandingView);
-            document.getElementById('summaryReturnHomeBtn').addEventListener('click', showLandingView);
-
-            document.getElementById('practiceAllBtn').addEventListener('click', () => initiatePracticeSession('all'));
-            document.getElementById('resetAllBtn').addEventListener('click', resetAllData);
-
-            document.getElementById('viewBookmarksHeaderBtn').addEventListener('click', showBookmarksReviewView);
-            document.getElementById('practiceBookmarksBtn').addEventListener('click', showBookmarksReviewView);
-            document.getElementById('statBookmarkedCard').addEventListener('click', showBookmarksReviewView);
-
-            // Modal Resume & Reset Actions
-            document.getElementById('resumeSessionBtn').addEventListener('click', () => {
-                const modalEl = document.getElementById('resumePromptModal');
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                if (modal) modal.hide();
-
-                if (pendingSessionTarget) {
-                    const scopeKey = pendingSessionTarget.mode === 'all' ? 'all' : pendingSessionTarget.moduleId;
-                    const savedIdx = userState.savedIndexes[scopeKey] || 0;
-                    startPracticeMode(pendingSessionTarget.mode, pendingSessionTarget.moduleId, savedIdx);
-                }
-            });
-
-            document.getElementById('restartSessionBtn').addEventListener('click', () => {
-                const modalEl = document.getElementById('resumePromptModal');
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                if (modal) modal.hide();
-
-                if (pendingSessionTarget) {
-                    const mode = pendingSessionTarget.mode;
-                    const moduleId = pendingSessionTarget.moduleId;
-                    const scopeKey = mode === 'all' ? 'all' : moduleId;
-
-                    userState.savedIndexes[scopeKey] = 0;
-                    userState.userAnswers[scopeKey] = {};
-
-                    saveState();
-                    startPracticeMode(mode, moduleId, 0);
-                }
-            });
-
-            // Question Controls
-            document.getElementById('prevBtn').addEventListener('click', () => navigateQuestion(-1));
-            document.getElementById('nextBtn').addEventListener('click', () => navigateQuestion(1));
-            document.getElementById('openGridBtn').addEventListener('click', openGridModal);
-            document.getElementById('bookmarkBtn').addEventListener('click', toggleCurrentBookmark);
-
-            document.getElementById('explainAiBtn').addEventListener('click', explainCurrentQuestionWithAI);
-            document.getElementById('summaryAiAnalysisBtn').addEventListener('click', analyzePerformanceWithAI);
-            document.getElementById('summaryRetryBtn').addEventListener('click', () => initiatePracticeSession(currentSession.mode, currentSession.moduleId));
-
-            document.getElementById('openAiModalBtn').addEventListener('click', () => {
-                const modal = new bootstrap.Modal(document.getElementById('aiGeneratorModal'));
-                modal.show();
-            });
-
-            document.getElementById('generateQuestionBtn').addEventListener('click', generateAIQuestion);
-
-            document.getElementById('themeToggleBtn').addEventListener('click', () => {
-                const newTheme = userState.theme === 'light' ? 'dark' : 'light';
-                applyTheme(newTheme);
-                saveState();
-            });
-
-            // Review filter buttons
-            document.querySelectorAll('.review-filter-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const filter = e.target.getAttribute('data-filter');
-                    filterReview(filter, e.target);
-                });
-            });
+      // Review filter buttons
+      document.querySelectorAll('.review-filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const filter = e.target.getAttribute('data-filter');
+          filterReview(filter, e.target);
         });
-    </script>
+      });
+    });
+  </script>
 </body>
-
 </html>
